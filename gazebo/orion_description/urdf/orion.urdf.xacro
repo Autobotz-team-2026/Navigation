@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<robot name="orion" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="common_properties.urdf.xacro"/>
+    <xacro:include filename="orion_base.urdf.xacro"/>
+    <xacro:include filename="orion_manipulator_scara.urdf.xacro"/>
+
+    <joint name="base_scara_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="base_scara_link"/>
+        <origin xyz="${(base_length/2) - 0.15} 0 ${base_height}" rpy="0 0 0"/>
+    </joint>
+
+    <xacro:include filename="orion_base_gazebo.urdf.xacro"/>
+
+</robot>
