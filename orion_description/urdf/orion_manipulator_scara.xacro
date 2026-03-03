@@ -138,6 +138,7 @@
         <origin xyz="0.075 0 0.08" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
         <limit lower="-3.14" upper="3.14" effort="10.0" velocity="1.0"/>
+        <dynamics friction="0.8" damping="0.3" />
     </joint>
 
     <joint name="support_scara_joint" type="fixed">
@@ -151,7 +152,7 @@
         <child link="movable_scara_link"/>
         <origin xyz="0 0 0.075" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
-        <limit lower="0" upper="0.45" effort="10.0" velocity="1.0"/>
+        <limit lower="0" upper="0.45" effort="500.0" velocity="1.0"/>
     </joint>
 
     <joint name="movable_scara_arm_1_joint" type="fixed">
@@ -166,6 +167,7 @@
         <origin xyz="0.35 0 -0.05" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
         <limit lower="-3.14" upper="3.14" effort="10.0" velocity="1.0"/>
+        <dynamics friction="0.8" damping="0.3" />
     </joint>
 
     <joint name="arm2_base_gripper_joint" type="revolute">
@@ -174,6 +176,7 @@
         <origin xyz="0.34 0 -0.040" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
         <limit lower="-3.14" upper="3.14" effort="10.0" velocity="1.0"/>
+        <dynamics friction="0.3" damping="0.3" />
     </joint>
 
     <joint name="base_right_gripper_joint" type="prismatic">
