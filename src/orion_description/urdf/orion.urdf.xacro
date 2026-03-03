@@ -12,5 +12,6 @@
     </joint>
 
     <xacro:include filename="orion_base_gazebo.urdf.xacro"/>
-
+    <xacro:include filename="sensors/camera.xacro"/>
+    <xacro:include filename="sensors/imus.xacro"/>
 </robot>
