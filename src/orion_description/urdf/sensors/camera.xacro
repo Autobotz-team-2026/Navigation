@@ -22,10 +22,10 @@
 
     </link>
 
-    <joint name="base_camera_joint" type="fixed">
-        <parent link="base_link"/>
+    <joint name="base_gripper_camera_joint" type="fixed">
+        <parent link="base_gripper_link"/>
         <child link="camera_link"/>
-        <origin xyz="${(base_length+camera_length)/2.0} 0 ${base_height/2}" rpy="0 0 0"/>
+        <origin xyz="${(base_gripper_length+camera_height)/2} 0 0" rpy="0 ${pi/2} 0"/>
     </joint>
 
     <link name="camera_link_optical"></link>

@@ -2,6 +2,7 @@
 <robot name="orion" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <gazebo>
+        <plugin name="gz::sim::systems::Imu" filename="gz-sim-imu-system"/>
         <plugin
             filename="gz-sim-sensors-system"
             name="gz::sim::systems::Sensors">
@@ -9,5 +10,7 @@
 
         </plugin>
     </gazebo>
+
+    
 
 </robot>
