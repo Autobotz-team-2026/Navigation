@@ -69,3 +69,27 @@
   ros_type_name: sensor_msgs/msg/Imu
   gz_type_name: gz.msgs.IMU
   direction: GZ_TO_ROS
+
+- ros_topic_name: "/scara_arm_joint1/cmd_pos"
+  gz_topic_name: "/model/orion/joint/scara_arm_joint/0/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/scara_arm_joint2/cmd_pos"
+  gz_topic_name: "/model/orion/joint/scara_arm_joint/1/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/scara_claw_rotation_joint0/cmd_pos"
+  gz_topic_name: "/model/orion/joint/scara_claw_rotation_joint/0/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/scara_height_joint0/cmd_pos"
+  gz_topic_name: "/model/orion/joint/scara_height_joint/0/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
