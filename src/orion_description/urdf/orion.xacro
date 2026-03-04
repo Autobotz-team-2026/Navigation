@@ -12,6 +12,7 @@
     </joint>
 
     <xacro:include filename="orion_base_gazebo.xacro"/>
+
     <xacro:include filename="orion_manipulator_scara_gazebo.xacro"/>
     <xacro:include filename="sensors/camera.xacro"/>
     <xacro:include filename="sensors/imus.xacro"/>
