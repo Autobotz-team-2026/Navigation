@@ -41,7 +41,8 @@
             name="gz::sim::systems::JointPositionController">
             <joint_name>arm2_base_gripper_joint</joint_name>
             <topic>/model/orion/joint/scara_claw_rotation_joint/0/cmd_pos</topic>
-            <p_gain>3.0</p_gain>
+            <p_gain>150.0</p_gain> <i_gain>0.50</i_gain>  <d_gain>15.0</d_gain>
+            <i_max>15.0</i_max>    <i_min>-15.0</i_min>
         </plugin>
     </gazebo>
 
@@ -51,7 +52,7 @@
             name="gz::sim::systems::JointPositionController">
             <joint_name>base_right_gripper_joint</joint_name>
             <topic>/model/orion/joint/scara_gripper/right/cmd_pos</topic>
-            <p_gain>3.0</p_gain>
+            <p_gain>500.0</p_gain> 
         </plugin>
     </gazebo>
 
@@ -61,7 +62,7 @@
             name="gz::sim::systems::JointPositionController">
             <joint_name>base_left_gripper_joint</joint_name>
             <topic>/model/orion/joint/scara_gripper/left/cmd_pos</topic>
-            <p_gain>3.0</p_gain>
+            <p_gain>500.0</p_gain> 
         </plugin>
     </gazebo>
 
