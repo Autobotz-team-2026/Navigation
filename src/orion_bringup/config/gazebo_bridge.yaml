@@ -93,3 +93,15 @@
   ros_type_name: "std_msgs/msg/Float64"
   gz_type_name: "gz.msgs.Double"
   direction: ROS_TO_GZ
+
+- ros_topic_name: "/scara_right_gripper/cmd_pos"
+  gz_topic_name: "/model/orion/joint/scara_gripper/right/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/scara_left_gripper/cmd_pos"
+  gz_topic_name: "/model/orion/joint/scara_gripper/left/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ

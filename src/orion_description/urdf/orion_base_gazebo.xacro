@@ -24,12 +24,6 @@
             <joint_name>base_rear_right_wheel</joint_name>
             <joint_name>base_front_left_wheel</joint_name>
             <joint_name>base_front_right_wheel</joint_name>
-            <joint_name>scara_base_first_support_joint</joint_name>
-            <joint_name>first_support_movable_scara_joint</joint_name>
-            <joint_name>arm_joint</joint_name>
-            <joint_name>arm2_base_gripper_joint</joint_name>
-            <joint_name>base_right_gripper_joint</joint_name>
-            <joint_name>base_left_gripper_joint</joint_name>
         </plugin>
     </gazebo>
     
