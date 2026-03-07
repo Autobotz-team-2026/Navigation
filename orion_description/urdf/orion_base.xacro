@@ -58,11 +58,8 @@
     </link>
 
     <xacro:wheel_link prefix="rear_left"/>
-
     <xacro:wheel_link prefix="rear_right"/>
-
     <xacro:wheel_link prefix="front_left"/>
-
     <xacro:wheel_link prefix="front_right"/>
 
     <link name="support_link">
@@ -82,11 +79,6 @@
         <xacro:box_inertia m="${support_lidar_mass}" x="${support_length}" y="${support_width}" z="${support_height}"
                            o_xyz="${support_length/2} 0 0" o_rpy="0 0 0"/>
     </link>
-
-
-    
-
-    --------------------------------------------------
 
     <joint name="base_joint" type="fixed">
         <parent link="base_footprint"/>
@@ -128,16 +120,4 @@
         <origin xyz="${(base_length/2)} 0 ${support_height/2}" rpy="0 0 0"/>
     </joint>
 
-  
-
-
-
 </robot>
-    
-
-
-
-    
-
-
- 
