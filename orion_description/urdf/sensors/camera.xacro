@@ -41,7 +41,7 @@
         </link>
 
         <joint name="${parent}_${name}_joint" type="fixed">
-            <parent link="${parent}"/>
+            <parent link="${parent}_link"/>
             <child link="${name}_link"/>
             <origin xyz="${origin_xyz}" rpy="${origin_rpy}"/>
         </joint>
@@ -84,11 +84,11 @@
 
     </xacro:macro>
 
-    <xacro:camera_module parent="base_link"
+    <xacro:camera_module parent="base_gripper"
                      length="0.01"
                      width="0.1"
                      height="0.05"
-                     origin_xyz="${(base_length+0.05)/2.0} 0 0"
+                     origin_xyz="${(base_gripper_length+0.05)/2.0} 0 0"
                      origin_rpy="0 ${pi/2} 0"/>
 
 </robot>
