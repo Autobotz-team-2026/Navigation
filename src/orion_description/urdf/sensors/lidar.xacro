@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:macro name="lidar_module" params="
+        parent
+        name:=laser
+        radius:=0.05
+        length:=0.04
+        mass:=0.2
+        origin_xyz:='0 0 0'
+        origin_rpy:='0 0 0'
+        samples:=360
+        resolution:=1
+        min_angle:=-3.14159
+        max_angle:=3.14159
+        range_min:=0.15
+        range_max:=10.0
+        range_resolution:=0.01
+        noise_stddev:=0.01
+        update_rate:=10
+        topic:=scan
+    ">
+
+        <link name="${name}_frame">
+            <visual>
+                <geometry>
+                    <cylinder radius="${radius}" length="${length}"/>
+                </geometry>
+                <material name="yellow"/>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+            </visual>
+            <collision>
+                <geometry>
+                    <cylinder radius="${radius}" length="${length}"/>
+                </geometry>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+            </collision>
+            <xacro:cylinder_inertia m="${mass}" r="${radius}" h="${length}"
+                                    o_xyz="0 0 0" o_rpy="0 0 0"/>
+        </link>
+
+        <joint name="${name}_support" type="fixed">
+            <parent link="${parent}"/>
+            <child link="${name}_frame"/>
+            <origin xyz="${origin_xyz}" rpy="${origin_rpy}"/>
+        </joint>
+
+        <gazebo reference="${name}_frame">
+            <sensor name="${name}" type="gpu_lidar">
+                <pose>0 0 0 0 0 0</pose>
+                <always_on>true</always_on>
+                <visualize>true</visualize>
+                <update_rate>${update_rate}</update_rate>
+                <topic>${topic}</topic>
+                <gz_frame_id>${name}_frame</gz_frame_id>
+                <lidar>
+                    <scan>
+                        <horizontal>
+                            <samples>${samples}</samples>
+                            <resolution>${resolution}</resolution>
+                            <min_angle>${min_angle}</min_angle>
+                            <max_angle>${max_angle}</max_angle>
+                        </horizontal>
+                    </scan>
+                    <range>
+                        <min>${range_min}</min>
+                        <max>${range_max}</max>
+                        <resolution>${range_resolution}</resolution>
+                    </range>
+                    <noise>
+                        <type>gaussian</type>
+                        <mean>0.0</mean>
+                        <stddev>${noise_stddev}</stddev>
+                    </noise>
+                </lidar>
+            </sensor>
+        </gazebo>
+
+    </xacro:macro>
+
+    <xacro:lidar_module parent="support_link"
+                    radius="${lidar_radius}"
+                    length="${lidar_length}"
+                    origin_xyz="${support_length/2} 0 ${(support_height/2)+(lidar_length/2)}"
+                    origin_rpy="0 0 0"
+                    min_angle="${-pi/2}"
+                    max_angle="${pi/2}"/>
+</robot>
