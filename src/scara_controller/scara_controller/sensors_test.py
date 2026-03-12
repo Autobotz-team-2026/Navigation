@@ -32,15 +32,20 @@ class SensorTest(Node):
     
     def imuArm1Setter(self, msg):
         rpy = quaternionToEuler(msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w)
-        self.imu_arm1 = {'roll':rpy[0], 'pitch':rpy[1], 'yaw':rpy[2]}
+        self.imu_arm1 = {'roll':rpy[0], 'pitch':rpy[1], 'yaw':rpy[2]-self.imu_base['yaw']}
+
+
 
     def imuArm2Setter(self, msg):
         rpy = quaternionToEuler(msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w)
-        self.imu_arm2 = {'roll':rpy[0], 'pitch':rpy[1], 'yaw':rpy[2]}
+        self.imu_arm2 = {'roll':rpy[0], 'pitch':rpy[1], 'yaw':rpy[2]-self.imu_arm1['yaw']-self.imu_base['yaw']}
+
 
     def imuGripperSetter(self, msg):
         rpy = quaternionToEuler(msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w)
-        self.imu_gripper = {'roll':rpy[0], 'pitch':rpy[1], 'yaw':rpy[2]}
+        self.imu_gripper = {'roll':rpy[0], 'pitch':rpy[1], 'yaw':rpy[2]-self.imu_arm2['yaw']-self.imu_arm1['yaw']-self.imu_base['yaw']}
+
+
 
 def quaternionToEuler(x,y,z,w):
     roll = math.atan2(2*(w*x+y*z), 1 - 2*(x**2+y**2))
