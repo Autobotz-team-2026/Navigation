@@ -24,7 +24,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'scara_controller = scara_controller.scara:main'
+            'scara_controller = scara_controller.scara:main',
+            'sensor_tests = scara_controller.sensors_test:main'
         ],
     },
 )
