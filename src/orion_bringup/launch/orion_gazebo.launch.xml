@@ -24,4 +24,16 @@
     <node pkg="ros_gz_bridge" exec="parameter_bridge">
         <param name="config_file" value="$(var gazebo_config_path)"/>
     </node>
+
+    <node pkg="scara_controller" exec="sensor_tests" name="sensor_tests"
+        launch-prefix="xterm -geometry 80x20+0+0 -hold -e"/>
+
+    <node pkg="scara_controller" exec="scara_controller" name="scara_controller"/>
+
+    <node pkg="scara_controller" exec="goal_pub" name="goal_pub"
+        launch-prefix="xterm -geometry 80x20+80+0 -hold -e"/>
+
+    
+
+
 </launch>
