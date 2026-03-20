@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
+from std_msgs.msg import Float32MultiArray
 import math
 
 class SensorTest(Node):
@@ -17,6 +18,7 @@ class SensorTest(Node):
         self.imuArm1Sub = self.create_subscription(Imu, '/imu_arm1', self.imuArm1Setter, 10)
         self.imuArm2Sub = self.create_subscription(Imu, '/imu_arm2', self.imuArm2Setter, 10)
         self.imuGripperSub = self.create_subscription(Imu, '/imu_gripper', self.imuGripperSetter, 10)
+        self.imusPub = self.create_publisher(Float32MultiArray, '/imus_yaw', 10)
 
         self.showImusTimer = self.create_timer(1, self.showImus)
 
@@ -25,6 +27,8 @@ class SensorTest(Node):
         self.get_logger().info(f"Arm1 IMU:{self.imu_arm1}")
         self.get_logger().info(f"Arm2 IMU:{self.imu_arm2}")
         self.get_logger().info(f"Gripper IMU:{self.imu_gripper}")
+        msg = Float32MultiArray()
+        msg.data = [self.imu_base["yaw"], self.imu_arm1["yaw"], self.imu_arm2["yaw"], self.imu_gripper["yaw"]]
 
     def imuBaseSetter(self, msg):
         rpy = quaternionToEuler(msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w)

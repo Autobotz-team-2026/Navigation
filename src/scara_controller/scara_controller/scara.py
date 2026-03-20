@@ -2,8 +2,40 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
-from std_msgs.msg import Float64
 import math
+from std_msgs.msg import Float64
+
+class JointPID:
+    def __init__(self, kp, ki, kd, goal):
+        self.kp, self.ki, self.kd = kp, ki, kd
+        self.goal = goal
+        self.prev_error = 0.0
+        self.integral = 0.0
+        self.last_time = None 
+
+    def calculate(self, current_pos, current_time_sec):
+        if self.last_time is None:
+            self.last_time = current_time_sec
+            return 0.0
+
+        dt = current_time_sec - self.last_time
+        if dt <= 0: return 0.0
+
+        # 1. Calcular Erro (Normalizado para juntas rotativas)
+        error = self.goal - current_pos
+        error = math.atan2(math.sin(error), math.cos(error)) # Menor caminho circular
+
+        # 2. Termos do PID
+        self.integral += error * dt
+        derivative = (error - self.prev_error) / dt
+
+        output = (self.kp * error) + (self.ki * self.integral) + (self.kd * derivative)
+
+        # 3. Atualizar estado
+        self.prev_error = error
+        self.last_time = current_time_sec
+
+        return output
 
 class ScaraControl(Node):
     def __init__(self):
@@ -12,23 +44,49 @@ class ScaraControl(Node):
         #Manipulator datas:
         self.l1 = 0.425
         self.l2 = 0.35
+
+        
     
 
         #Initials variables
-        self.goal = [0.0, 0.0]
+        self.goal = [0.0, 1.0]
         self.theta1 = 0.0
         self.theta2 = 0.0
-        self.cords_received = False
+        self.cords_received = True
 
+
+        self.pid1 = JointPID(10, 0, 0.4, self.theta1)
+        self.pid2 = JointPID(10, 0, 0.4, self.theta2)
         #Publishers and Subscribers
         self.goalSub = self.create_subscription(Float32MultiArray, '/goal_pose', self.goal_pose_setter, 10)
         self.arm1Pub = self.create_publisher(Float64, '/scara_arm_joint1/cmd_pos', 10)
         self.arm2Pub = self.create_publisher(Float64, '/scara_arm_joint2/cmd_pos', 10)
         self.heightPub = self.create_publisher(Float64, '/scara_height_joint0/cmd_pos', 10)
         self.clawRotPub = self.create_publisher(Float64, '/scara_claw_rotation_joint0/cmd_pos', 10)
-
         self.timerCinematic = self.create_timer(0.5, self.thetasCalc)
+        self.imusSub = self.create_subscription(Float32MultiArray, '/imus_yaw', self.pidCalc, 10)
 
+        #self.pidCalcula = self.create_timer(0.5, self.pidCalc)
+
+    def pidCalc(self, msg):
+        self.pid1.goal = self.theta1
+        self.pid2.goal = self.theta2
+        now_sec = self.get_clock().now().nanoseconds / 1e9
+        
+        current_theta1 = msg.data[1]
+        current_theta2 = msg.data[2]
+
+        v_control1 = self.pid1.calculate(current_theta1, now_sec)
+        v_control2 = self.pid2.calculate(current_theta2, now_sec)
+
+        cmd1_msg = Float64()
+        cmd1_msg.data = v_control1
+        cmd2_msg = Float64()
+        cmd2_msg.data = v_control2
+        self.arm1Pub.publish(cmd1_msg)
+        self.arm2Pub.publish(cmd2_msg)
+        
+        
 
     def goal_pose_setter(self, msg):
         if len(msg.data) >= 2:
@@ -49,14 +107,6 @@ class ScaraControl(Node):
 
             #Calculating theta1:
             self.theta1 = math.atan2(self.goal[1], self.goal[0]) - math.atan2(self.l2*math.sin(self.theta2), self.l1 + self.l2*cos_theta2)
-
-            cmdJoint1 = Float64()
-            cmdJoint1.data = self.theta1
-            cmdJoint2 = Float64()
-            cmdJoint2.data = self.theta2
-            self.arm1Pub.publish(cmdJoint1)
-            self.arm2Pub.publish(cmdJoint2)
-
 
 
 def main(args = None):
