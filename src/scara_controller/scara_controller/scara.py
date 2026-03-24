@@ -26,7 +26,7 @@ class JointPID:
         error = math.atan2(math.sin(error), math.cos(error)) # Menor caminho circular
 
         # 2. Termos do PID
-        self.integral += error * dt
+        self.integral = max(min(self.integral, 1.0), -1.0)
         derivative = (error - self.prev_error) / dt
 
         output = (self.kp * error) + (self.ki * self.integral) + (self.kd * derivative)
@@ -49,24 +49,22 @@ class ScaraControl(Node):
     
 
         #Initials variables
-        self.goal = [0.0, 1.0]
+        self.goal = [0.32, 0.0]
         self.theta1 = 0.0
         self.theta2 = 0.0
         self.cords_received = True
 
 
-        self.pid1 = JointPID(10, 0, 0.4, self.theta1)
-        self.pid2 = JointPID(10, 0, 0.4, self.theta2)
+        self.pid1 = JointPID(500, 0, 0, self.theta1)
+        self.pid2 = JointPID(500, 0, 0, self.theta2)
         #Publishers and Subscribers
         self.goalSub = self.create_subscription(Float32MultiArray, '/goal_pose', self.goal_pose_setter, 10)
         self.arm1Pub = self.create_publisher(Float64, '/scara_arm_joint1/cmd_pos', 10)
         self.arm2Pub = self.create_publisher(Float64, '/scara_arm_joint2/cmd_pos', 10)
         self.heightPub = self.create_publisher(Float64, '/scara_height_joint0/cmd_pos', 10)
         self.clawRotPub = self.create_publisher(Float64, '/scara_claw_rotation_joint0/cmd_pos', 10)
-        self.timerCinematic = self.create_timer(0.5, self.thetasCalc)
+        self.timerCinematic = self.create_timer(0.02, self.thetasCalc)
         self.imusSub = self.create_subscription(Float32MultiArray, '/imus_yaw', self.pidCalc, 10)
-
-        #self.pidCalcula = self.create_timer(0.5, self.pidCalc)
 
     def pidCalc(self, msg):
         self.pid1.goal = self.theta1

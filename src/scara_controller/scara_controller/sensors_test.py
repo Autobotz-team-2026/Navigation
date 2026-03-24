@@ -20,7 +20,7 @@ class SensorTest(Node):
         self.imuGripperSub = self.create_subscription(Imu, '/imu_gripper', self.imuGripperSetter, 10)
         self.imusPub = self.create_publisher(Float32MultiArray, '/imus_yaw', 10)
 
-        self.showImusTimer = self.create_timer(1, self.showImus)
+        self.showImusTimer = self.create_timer(0.02, self.showImus)
 
     def showImus(self):
         self.get_logger().info(f"Base IMU:{self.imu_base}")
@@ -28,7 +28,9 @@ class SensorTest(Node):
         self.get_logger().info(f"Arm2 IMU:{self.imu_arm2}")
         self.get_logger().info(f"Gripper IMU:{self.imu_gripper}")
         msg = Float32MultiArray()
-        msg.data = [self.imu_base["yaw"], self.imu_arm1["yaw"], self.imu_arm2["yaw"], self.imu_gripper["yaw"]]
+        msg.data = [math.radians(self.imu_base["yaw"]), math.radians(self.imu_arm1["yaw"]), math.radians(self.imu_arm2["yaw"]), math.radians(self.imu_gripper["yaw"])]
+        self.imusPub.publish(msg)
+
 
     def imuBaseSetter(self, msg):
         rpy = quaternionToEuler(msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w)
