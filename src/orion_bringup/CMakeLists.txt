@@ -12,8 +12,13 @@ find_package(ament_cmake REQUIRED)
 # find_package(<dependency> REQUIRED)
 
 install(
-  DIRECTORY launch config worlds
+  DIRECTORY launch config worlds maps
   DESTINATION share/${PROJECT_NAME}/
 )
 
 ament_package()
+
+install(PROGRAMS
+  nodes/nav_states.py
+  DESTINATION lib/${PROJECT_NAME}
+)

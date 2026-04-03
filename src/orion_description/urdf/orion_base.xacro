@@ -14,7 +14,7 @@
     <xacro:property name="lidar_length" value="0.08"/>
 
     <xacro:property name="base_mass" value="10.0"/>
-    <xacro:property name="wheel_mass" value="1.5"/>
+    <xacro:property name="wheel_mass" value="5.0"/>
     <xacro:property name="support_lidar_mass" value="0.3"/>
 
     <xacro:macro name="wheel_link" params="prefix">
@@ -35,6 +35,11 @@
             <xacro:cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_length}" 
                                     o_xyz="0 0 0" o_rpy="${pi / 2.0} 0 0"/>
         </link>
+        <gazebo reference="${prefix}_wheel_link">
+                <mu1>0.0</mu1>
+                <mu2>0.0</mu2>
+                <kp>1000000.0</kp> <kd>1.0</kd>
+        </gazebo>
     </xacro:macro>
 
     <link name="base_footprint"/>
@@ -58,11 +63,8 @@
     </link>
 
     <xacro:wheel_link prefix="rear_left"/>
-
     <xacro:wheel_link prefix="rear_right"/>
-
     <xacro:wheel_link prefix="front_left"/>
-
     <xacro:wheel_link prefix="front_right"/>
 
     <link name="support_link">
@@ -83,18 +85,6 @@
                            o_xyz="${support_length/2} 0 0" o_rpy="0 0 0"/>
     </link>
 
-    <link name="lidar_link">
-        <visual>
-            <geometry>
-                <cylinder radius="${lidar_radius}" length="${lidar_length}"/>
-            </geometry>
-            <material name="yellow"/>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-        </visual>
-    </link>
-
-    --------------------------------------------------
-
     <joint name="base_joint" type="fixed">
         <parent link="base_footprint"/>
         <child link="base_link"/>
@@ -106,15 +96,6 @@
         <child link="rear_left_wheel_link"/>
         <origin xyz="${-base_length/3} ${(base_width/2)+(wheel_length/2)} 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <gazebo reference="base_rear_left_wheel">
-            <surface>
-                <friction>
-                    <ode>
-                        <mu>1.0</mu>
-                        <mu2>0.0</mu2> </ode>
-                </friction>
-            </surface>
-        </gazebo>
     </joint>
 
     <joint name="base_rear_right_wheel" type="continuous">
@@ -122,15 +103,6 @@
         <child link="rear_right_wheel_link"/>
         <origin xyz="${-base_length/3} ${(-base_width/2)-(wheel_length/2)} 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <gazebo reference="base_rear_right_wheel">
-            <surface>
-                <friction>
-                    <ode>
-                        <mu>1.0</mu>
-                        <mu2>0.0</mu2> </ode>
-                </friction>
-            </surface>
-        </gazebo>
     </joint>
 
     <joint name="base_front_left_wheel" type="continuous">
@@ -138,15 +110,6 @@
         <child link="front_left_wheel_link"/>
         <origin xyz="${base_length/3} ${(base_width/2)+(wheel_length/2)} 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <gazebo reference="base_front_left_wheel">
-            <surface>
-                <friction>
-                    <ode>
-                        <mu>1.0</mu>
-                        <mu2>0.0</mu2> </ode>
-                </friction>
-            </surface>
-        </gazebo>
     </joint>
 
     <joint name="base_front_right_wheel" type="continuous">
@@ -154,27 +117,12 @@
         <child link="front_right_wheel_link"/>
         <origin xyz="${base_length/3} ${(-base_width/2)-(wheel_length/2)} 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <gazebo reference="base_front_right_wheel">
-            <surface>
-                <friction>
-                    <ode>
-                        <mu>1.0</mu>
-                        <mu2>0.0</mu2> </ode>
-                </friction>
-            </surface>
-        </gazebo>
     </joint>
 
     <joint name="base_support" type="fixed">
         <parent link="base_link"/>
         <child link="support_link"/>
         <origin xyz="${(base_length/2)} 0 ${support_height/2}" rpy="0 0 0"/>
-    </joint>
-
-    <joint name="lidar_support" type="fixed">
-        <parent link="support_link"/>
-        <child link="lidar_link"/>
-        <origin xyz="${support_length/2} 0 ${(support_height/2)+(lidar_length/2)}" rpy="0 0 0"/>
     </joint>
 
 </robot>

@@ -1,6 +1,6 @@
 <launch>
     <let name="urdf_path" 
-         value="$(find-pkg-share orion_description)/urdf/orion.urdf.xacro"/>
+         value="$(find-pkg-share orion_description)/urdf/orion.xacro"/>
         
     <let name="rviz_config_path"
          value="$(find-pkg-share orion_description)/rviz/urdf_config.rviz"/>

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <gazebo>
+
+    <!--gazebo>
         <plugin
             filename="gz-sim-mecanum-drive-system"
             name="gz::sim::systems::MecanumDrive">
@@ -14,6 +15,28 @@
             <frame_id>odom</frame_id>
             <child_frame_id>base_footprint</child_frame_id>
         </plugin>
+    </gazebo-->
+
+    <gazebo>
+        <plugin
+            filename="gz-sim-odometry-publisher-system"
+            name="gz::sim::systems::OdometryPublisher">
+            <odom_frame>odom</odom_frame>
+            <robot_base_frame>base_footprint</robot_base_frame>
+            <publish_odom_tf>true</publish_odom_tf> 
+        </plugin>
+
+        <plugin
+            filename="gz-sim-label-system"
+            name="gz::sim::systems::Label">
+        </plugin>
+
+        <plugin
+            filename="gz-sim-velocity-control-system"
+            name="gz::sim::systems::VelocityControl">
+            <initial_linear_velocity>0 0 0</initial_linear_velocity>
+            <initial_angular_velocity>0 0 0</initial_angular_velocity>
+        </plugin>
     </gazebo>
 
     <gazebo>
@@ -26,25 +49,5 @@
             <joint_name>base_front_right_wheel</joint_name>
         </plugin>
     </gazebo>
-    
-    <gazebo reference="lidar_link">
-        <sensor name = "lidar" type="gpu_lidar">
-            <topic>scan</topic>
-            <update_rate>10</update_rate>
-            <lidar>
-                <scan>
-                    <horizontal>
-                    <samples>360</samples>
-                    <min_angle>-0.7854</min_angle>
-                    <max_angle>0.7854</max_angle>
-                    </horizontal>
-                </scan>
-                <range>
-                    <min>0.1</min>
-                    <max>10</max>
-                </range>
-            </lidar>
-            <gz_frame_id>lidar_link</gz_frame_id>
-        </sensor>
-    </gazebo>
+
 </robot>
