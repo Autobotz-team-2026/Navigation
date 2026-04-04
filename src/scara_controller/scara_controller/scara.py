@@ -86,23 +86,23 @@ class ScaraControl(Node):
             self.arm1Pub.publish(cmd1_msg)
             self.arm2Pub.publish(cmd2_msg)
 
-            if self.manipulator_state == "Retract Arm":
-                if (self.pid1.error <= 0.01) and (self.pid2.error <= 0.01):
-                    confirmation.data = "Arm Retracted"
-                    self.confirmationPub.publish(confirmation)
-                    self.manipulator_state = "Stand By"
+            #if self.manipulator_state == "Retract Arm":
+                #if (self.pid1.prev_error <= 0.01) and (self.pid2.prev_error <= 0.01):
+                    #confirmation.data = "Arm Retracted"
+                    #self.confirmationPub.publish(confirmation)
+                    #self.manipulator_state = "Stand By"
                     
-            if self.manipulator_state == "Pick Block":
-                if (self.pid1.error <= 0.01) and (self.pid2.error <= 0.01):
-                    confirmation.data = "Block Picked"
-                    self.confirmationPub.publish(confirmation)
-                    self.manipulator_state = "Stand By"
+            #if self.manipulator_state == "Pick Block":
+                #if (self.pid1.prev_error <= 0.01) and (self.pid2.error <= 0.01):
+                    #confirmation.data = "Block Picked"
+                    #self.confirmationPub.publish(confirmation)
+                    #self.manipulator_state = "Stand By"
 
-            if self.manipulator_state == "Place Block":
-                if (self.pid1.error <= 0.01) and (self.pid2.error <= 0.01):
-                    confirmation.data = "Block Placed"
-                    self.confirmationPub.publish(confirmation)
-                    self.manipulator_state = "Stand By"
+            #if self.manipulator_state == "Place Block":
+                #if (self.pid1.prev_error <= 0.01) and (self.pid2.prev_errorerror <= 0.01):
+                    #confirmation.data = "Block Placed"
+                    #self.confirmationPub.publish(confirmation)
+                    #self.manipulator_state = "Stand By"
             
 
             
