@@ -14,10 +14,10 @@ class SensorTest(Node):
         self.imu_gripper = {'roll':0.0, 'pitch': 0.0, 'yaw':0.0}
 
         #Sensors subscribers:
-        self.imuBaseSub = self.create_subscription(Imu, '/imu_base', self.imuBaseSetter, 10)
-        self.imuArm1Sub = self.create_subscription(Imu, '/imu_arm1', self.imuArm1Setter, 10)
-        self.imuArm2Sub = self.create_subscription(Imu, '/imu_arm2', self.imuArm2Setter, 10)
-        self.imuGripperSub = self.create_subscription(Imu, '/imu_gripper', self.imuGripperSetter, 10)
+        self.imuBaseSub = self.create_subscription(Imu, '/imu/base', self.imuBaseSetter, 10)
+        self.imuArm1Sub = self.create_subscription(Imu, '/imu/arm1', self.imuArm1Setter, 10)
+        self.imuArm2Sub = self.create_subscription(Imu, '/imu/arm2', self.imuArm2Setter, 10)
+        self.imuGripperSub = self.create_subscription(Imu, '/imu/gripper', self.imuGripperSetter, 10)
         self.imusPub = self.create_publisher(Float32MultiArray, '/imus_yaw', 10)
 
         self.showImusTimer = self.create_timer(0.02, self.showImus)
