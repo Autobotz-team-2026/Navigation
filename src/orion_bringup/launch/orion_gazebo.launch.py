@@ -26,7 +26,7 @@ def generate_launch_description():
 
     world_path = os.path.join(
         get_package_share_directory('orion_bringup'),
-        'worlds', 'navigation_tests.sdf'
+        'worlds', 'CAF_arena.sdf'
     )
 
     robot_description = Command(['xacro ', urdf_path])
@@ -66,7 +66,7 @@ def generate_launch_description():
         arguments=['-d', rviz_config_path],
         parameters=[{'use_sim_time': True}]
     )
-
+    
     return LaunchDescription([
         gazebo,
         bridge,
