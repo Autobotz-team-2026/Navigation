@@ -23,10 +23,10 @@ class SensorTest(Node):
         self.showImusTimer = self.create_timer(0.02, self.showImus)
 
     def showImus(self):
-        self.get_logger().info(f"Base IMU:{self.imu_base}")
-        self.get_logger().info(f"Arm1 IMU:{self.imu_arm1}")
-        self.get_logger().info(f"Arm2 IMU:{self.imu_arm2}")
-        self.get_logger().info(f"Gripper IMU:{self.imu_gripper}")
+        self.get_logger().info(f"Base IMU:{self.imu_base}", throttle_duration_sec = 1)
+        self.get_logger().info(f"Arm1 IMU:{self.imu_arm1}", throttle_duration_sec = 1)
+        self.get_logger().info(f"Arm2 IMU:{self.imu_arm2}", throttle_duration_sec = 1)
+        self.get_logger().info(f"Gripper IMU:{self.imu_gripper}", throttle_duration_sec = 1)
         msg = Float32MultiArray()
         msg.data = [math.radians(self.imu_base["yaw"]), math.radians(self.imu_arm1["yaw"]), math.radians(self.imu_arm2["yaw"]), math.radians(self.imu_gripper["yaw"])]
         self.imusPub.publish(msg)
