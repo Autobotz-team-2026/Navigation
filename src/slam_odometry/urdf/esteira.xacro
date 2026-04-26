@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<robot name="esteira" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:property name="esteira_base_length" value="0.41"/>
+    <xacro:property name="esteira_base_width" value="0.335"/>
+    <xacro:property name="esteira_base_height" value="0.145"/>
+    <xacro:property name="wheel_radius" value="0.050"/>
+    <xacro:property name="wheel_length" value="0.056"/>
+    <xacro:property name="laser_radius" value="0.055"/>
+    <xacro:property name="laser_length" value="0.043"/>
+
+    <material name="grey">
+        <color rgba="0.6 0.6 0.6 1"/>
+    </material>
+
+    <material name="white">
+        <color rgba="1 1 1 1"/>
+    </material>
+
+    <material name="blue">
+        <color rgba="0 0 0.6 1"/>
+    </material>
+
+    <xacro:macro name="wheel_link" params="prefix">
+        <link name="${prefix}_wheel_link">
+            <visual>
+                <geometry>
+                    <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+                </geometry>
+                <origin xyz="0 0 0" rpy="${pi/2.0} 0 0"/>
+                <material name="blue"/>
+            </visual>
+        </link>
+    </xacro:macro>
+
+    <link name="base_footprint"/>
+
+    <link name="base_link">
+            <visual>
+                <geometry>
+                    <box size="${esteira_base_length} ${esteira_base_width} ${esteira_base_height}"/>
+                </geometry>
+                <material name="grey"/>
+                <origin xyz="0 0 ${esteira_base_height/2.0}" rpy="0 0 0"/>
+            </visual>
+    </link>
+
+    <xacro:wheel_link prefix="rear_left"/>
+    <xacro:wheel_link prefix="rear_right"/>
+    <xacro:wheel_link prefix="front_left"/>
+    <xacro:wheel_link prefix="front_right"/>
+
+    <link name="laser">
+        <visual>
+            <geometry>
+                    <cylinder radius="${laser_radius}" length="${laser_length}"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <material name="white"/>
+            </visual>
+    </link>
+
+    -------------------------------------------------------
+
+    <joint name="base_joint" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="base_rear_left_wheel" type="fixed">
+        <parent link="base_link"/>
+        <child link="rear_left_wheel_link"/>
+        <origin xyz="-0.137 ${(esteira_base_width/2.0) + (wheel_length/2.0)} 0" rpy="0 0 0"/>
+        <!-- <axis xyz="0 1 0"/> -->
+    </joint>
+
+    <joint name="base_rear_right_wheel" type="fixed">
+        <parent link="base_link"/>
+        <child link="rear_right_wheel_link"/>
+        <origin xyz="-0.137 ${-((esteira_base_width/2.0) + (wheel_length/2.0))} 0" rpy="0 0 0"/>
+        
+    </joint>
+
+    <joint name="base_front_left_wheel" type="fixed">
+        <parent link="base_link"/>
+        <child link="front_left_wheel_link"/>
+        <origin xyz="0.137 ${(esteira_base_width/2.0) + (wheel_length/2.0)} 0" rpy="0 0 0"/>
+        
+    </joint>
+
+    <joint name="base_front_right_wheel" type="fixed">
+        <parent link="base_link"/>
+        <child link="front_right_wheel_link"/>
+        <origin xyz="0.137 ${-((esteira_base_width/2.0) + (wheel_length/2.0))} 0" rpy="0 0 0"/>
+        
+    </joint>
+
+    <joint name="base_laser_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="laser"/>
+        <origin xyz="0 0 ${esteira_base_height + (laser_length/2.0)}" rpy="0 0 0"/>
+    </joint>
+
+</robot>
