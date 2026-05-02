@@ -5,7 +5,7 @@
     <xacro:include filename="orion_manipulator_scara.xacro"/>
     <xacro:include filename="orion_manipulator_scara_gazebo.xacro"/>
     <xacro:include filename="sensors/camera.xacro"/>
-    <xacro:include filename="sensors/ultrassonic.xacro"/>
+    <!-- <xacro:include filename="sensors/ultrassonic.xacro"/> -->
     <xacro:include filename="sensors/imus.xacro"/>
     
     <xacro:imu_sensor prefix="arm1" parent="arm_1_link" xyz="0 0 0"/>
