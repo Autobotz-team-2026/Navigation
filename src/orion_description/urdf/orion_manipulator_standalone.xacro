@@ -11,6 +11,7 @@
     <xacro:imu_sensor prefix="arm1" parent="arm_1_link" xyz="0 0 0"/>
     <xacro:imu_sensor prefix="arm2" parent="arm_2_link" xyz="0 0 0"/>
     <xacro:imu_sensor prefix="gripper" parent="base_gripper_link" xyz="0 0 0"/>
+    <xacro:include filename="sensors/distance_laser.xacro"/>
     
     <xacro:include filename="world_sensor_plugins.xacro"/>
     

@@ -78,9 +78,9 @@
 
     </xacro:macro>
 
-    <xacro:lidar_module parent="first_support_scara_link"
-                    origin_xyz="0 0 ${scara_support_length}"
-                    origin_rpy="0 ${-pi/2} 0"
+    <xacro:lidar_module parent="second_support_scara_link"
+                    origin_xyz="0 0 0"
+                    origin_rpy="0 ${pi/2} 0"
                     min_angle="0"
                     max_angle="0"/>
 </robot>
