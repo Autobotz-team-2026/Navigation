@@ -12,7 +12,15 @@
         </plugin>
     </gazebo>
 
-     
+    <gazebo>
+        <plugin
+            filename="gz-sim-joint-controller-system"
+            name="gz::sim::systems::JointController">
+            <joint_name>first_support_movable_scara_joint</joint_name>
+            <topic>/model/orion/joint/scara_height_joint/0/cmd_pos</topic>
+            <initial_velocity>0</initial_velocity>
+        </plugin>
+    </gazebo> 
 
     <gazebo>
         <plugin
