@@ -22,21 +22,18 @@ class JointPID:
         dt = current_time_sec - self.last_time
         if dt <= 0: return 0.0
 
-        # 1. Calcular Erro (Normalizado para juntas rotativas)
         error = self.goal - current_pos
 
-        # 2. Termos do PID
         self.integral += error * dt
         self.integral = max(min(self.integral, 1.0), -1.0)
         derivative = (error - self.prev_error) / dt
 
         output = (self.kp * error) + (self.ki * self.integral) + (self.kd * derivative)
 
-        # 3. Atualizar estado
         self.prev_error = error
         self.last_time = current_time_sec
 
-        if abs(error) <= 0.01:
+        if abs(error) <= 0.5:
             self.confirmation = True
         else: 
             self.confirmation = False
@@ -57,12 +54,12 @@ class ScaraControl(Node):
         self.block_pose = [0.0, 0.0]
         self.theta1 = 0.0                        #First joint rotation.
         self.theta2 = 0.0                        #Second joint rotation.
-        self.height = 0.0
+        self.height = 0.09
         self.manipulator_state = "Stand By"      #Manipulator's state.
         self.block_received = False
         self.pid1 = JointPID(5, 0.5, 1, self.theta1)
         self.pid2 = JointPID(5, 0.5, 1, self.theta2)
-        self.heightPid = JointPID(5, 0.5, 1, self.height)
+        self.heightPid = JointPID(500, 0, 100, self.height)
 
         #current positions:
         self.current_theta1 = 0.0
@@ -107,7 +104,7 @@ class ScaraControl(Node):
         cmd2_msg = Float64()
         cmd2_msg.data = v_control2
         cmdHeight = Float64()
-        cmdHeight.data = v_controlHeight
+        cmdHeight.data = -v_controlHeight
         self.arm1Pub.publish(cmd1_msg)
         self.arm2Pub.publish(cmd2_msg)
         self.heightPub.publish(cmdHeight)
@@ -136,18 +133,18 @@ class ScaraControl(Node):
         if self.manipulator_state == "Retract Arm":
             self.goal[0] = -0.775
             self.goal[1] = 0
-            self.height = 0.1
+            self.height = 0.09
             self.get_logger().info(f"Retraindo braço...")
 
         elif self.manipulator_state == "Place Block":
             self.goal[0] = 0.775
             self.goal[1] = 0
-            self.height = 0.4
+            self.height = 0.3
 
         elif self.manipulator_state == "Pick Block" and self.block_received:
             self.goal[0] = self.block_pose[0]
             self.goal[1] = self.block_pose[1]
-            self.height = 0.4
+            self.height = 0.3
 
         elif self.manipulator_state == "Stand By":
             self.goal[0] = self.goal[0]

@@ -19,6 +19,9 @@
             <joint_name>first_support_movable_scara_joint</joint_name>
             <topic>/model/orion/joint/scara_height_joint/0/cmd_pos</topic>
             <initial_velocity>0</initial_velocity>
+            <use_force_commands>true</use_force_commands>
+            <p_gain>1</p_gain>
+            <i_gain>0</i_gain>
         </plugin>
     </gazebo> 
 
