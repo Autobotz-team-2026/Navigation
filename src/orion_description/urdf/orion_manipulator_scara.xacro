@@ -18,7 +18,7 @@
     <xacro:property name="gripper_height" value="0.06"/>
 
     <xacro:property name="base_scara_mass" value="3.0"/>
-    <xacro:property name="scara_support_mass" value="1.0"/>
+    <xacro:property name="scara_support_mass" value="10.0"/>
     <xacro:property name="arm_mass" value="1.0"/>
     <xacro:property name="base_gripper_mass" value="0.2"/>
     <xacro:property name="gripper_mass" value="0.1"/>

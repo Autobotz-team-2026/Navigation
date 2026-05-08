@@ -1,3 +1,5 @@
+
+
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -11,7 +13,7 @@ def generate_launch_description():
 
     urdf_path = os.path.join(
         get_package_share_directory('orion_description'),
-        'urdf', 'orion.xacro'
+        'urdf', 'orion_manipulator_standalone.xacro'
     )
 
     rviz_config_path = os.path.join(
@@ -26,10 +28,11 @@ def generate_launch_description():
 
     world_path = os.path.join(
         get_package_share_directory('orion_bringup'),
-        'worlds', 'CAF_arena.sdf'
+        'worlds', 'scara_tests.sdf'
     )
 
     robot_description = Command(['xacro ', urdf_path])
+
 
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
@@ -66,7 +69,7 @@ def generate_launch_description():
         arguments=['-d', rviz_config_path],
         parameters=[{'use_sim_time': True}]
     )
-    
+
     return LaunchDescription([
         gazebo,
         bridge,
