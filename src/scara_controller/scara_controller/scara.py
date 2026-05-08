@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Float32MultiArray
 import math
-from std_msgs.msg import String
-from std_msgs.msg import Float64
+from std_msgs.msg import Float64, Float32, String, Float32MultiArray
+
 
 class JointPID:
     def __init__(self, kp, ki, kd, goal):
@@ -58,10 +57,17 @@ class ScaraControl(Node):
         self.block_pose = [0.0, 0.0]
         self.theta1 = 0.0                        #First joint rotation.
         self.theta2 = 0.0                        #Second joint rotation.
+        self.height = 0.0
         self.manipulator_state = "Stand By"      #Manipulator's state.
         self.block_received = False
         self.pid1 = JointPID(5, 0.5, 1, self.theta1)
         self.pid2 = JointPID(5, 0.5, 1, self.theta2)
+        self.heightPid = JointPID(5, 0.5, 1, self.height)
+
+        #current positions:
+        self.current_theta1 = 0.0
+        self.current_theta2 = 0.0
+        self.current_height = 0.0
 
         #Publishers and Subscribers
         self.stateCmdSub = self.create_subscription(String, '/scara/command', self.state_setter, 10) #Take the string from "/scara/command" and set the manipulator's state: "Retract", "Pick Block" or "Place Block".
@@ -73,41 +79,53 @@ class ScaraControl(Node):
         self.confirmationPub = self.create_publisher(String, '/scara/confirmation', 10)
         self.timerGoalSetter = self.create_timer(0.02, self.goal_setter)
         self.timerCinematic = self.create_timer(0.02, self.thetasCalc)
-        self.imusSub = self.create_subscription(Float32MultiArray, '/imus_yaw', self.pidCalc, 10)
+        self.imusSub = self.create_subscription(Float32MultiArray, '/imus_yaw', self.currentArmSetter, 10)
+        self.heightSub = self.create_subscription(Float32, '/scara/height_sensor', self.currentHeightSetter, 10)
+        self.timerpid = self.create_timer(0.02, self.pidCalc)
 
-    def pidCalc(self, msg):
+    def currentHeightSetter(self, msg):
+        self.current_height = msg.data
+
+    def currentArmSetter(self, msg):
+        self.current_theta1 = msg.data[1]
+        self.current_theta2 = msg.data[2]
+
+    def pidCalc(self):
         confirmation = String()
         self.pid1.goal = self.theta1
         self.pid2.goal = self.theta2
+        self.heightPid.goal = self.height
         now_sec = self.get_clock().now().nanoseconds / 1e9
-            
-        current_theta1 = msg.data[1]
-        current_theta2 = msg.data[2]
+    
 
-        v_control1 = self.pid1.calculate(current_theta1, now_sec)
-        v_control2 = self.pid2.calculate(current_theta2, now_sec)
+        v_control1 = self.pid1.calculate(self.current_theta1, now_sec)
+        v_control2 = self.pid2.calculate(self.current_theta2, now_sec)
+        v_controlHeight = self.heightPid.calculate(self.current_height, now_sec)
 
         cmd1_msg = Float64()
         cmd1_msg.data = v_control1
         cmd2_msg = Float64()
         cmd2_msg.data = v_control2
+        cmdHeight = Float64()
+        cmdHeight.data = v_controlHeight
         self.arm1Pub.publish(cmd1_msg)
         self.arm2Pub.publish(cmd2_msg)
+        self.heightPub.publish(cmdHeight)
 
         if self.manipulator_state == "Retract Arm":
-            if (self.pid1.confirmation) and (self.pid2.confirmation):
+            if (self.pid1.confirmation) and (self.pid2.confirmation) and (self.heightPid.confirmation):
                 confirmation.data = "Arm Retracted"
                 self.confirmationPub.publish(confirmation)
                 self.manipulator_state = "Stand By"
                     
         if self.manipulator_state == "Pick Block":
-            if (self.pid1.confirmation) and (self.pid2.confirmation):
+            if (self.pid1.confirmation) and (self.pid2.confirmation) and (self.heightPid.confirmation):
                 confirmation.data = "Block Picked"
                 self.confirmationPub.publish(confirmation)
                 self.manipulator_state = "Stand By"
 
         if self.manipulator_state == "Place Block":
-            if (self.pid1.confirmation) and (self.pid2.confirmation):
+            if (self.pid1.confirmation) and (self.pid2.confirmation) and (self.heightPid.confirmation):
                 confirmation.data = "Block Placed"
                 self.confirmationPub.publish(confirmation)
                 self.manipulator_state = "Stand By"
@@ -118,19 +136,23 @@ class ScaraControl(Node):
         if self.manipulator_state == "Retract Arm":
             self.goal[0] = -0.775
             self.goal[1] = 0
+            self.height = 0.1
             self.get_logger().info(f"Retraindo braço...")
 
         elif self.manipulator_state == "Place Block":
             self.goal[0] = 0.775
             self.goal[1] = 0
+            self.height = 0.4
 
         elif self.manipulator_state == "Pick Block" and self.block_received:
             self.goal[0] = self.block_pose[0]
             self.goal[1] = self.block_pose[1]
+            self.height = 0.4
 
         elif self.manipulator_state == "Stand By":
             self.goal[0] = self.goal[0]
             self.goal[1] = self.goal[1]
+            self.height = self.height
 
     def block_pose_setter(self, msg):
         self.block_pose[0] = msg.data[0]

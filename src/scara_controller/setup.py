@@ -26,7 +26,8 @@ setup(
         'console_scripts': [
             'scara_controller = scara_controller.scara:main',
             'sensor_tests = scara_controller.sensors_test:main',
-            'goal_pub = scara_controller.goal_pub:main'
+            'goal_pub = scara_controller.goal_pub:main',
+            'height_sensor = scara_controller.laser_to_distance_sensor_convertor:main'
         ],
     },
 )
