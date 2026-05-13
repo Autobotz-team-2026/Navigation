@@ -35,9 +35,9 @@
                 name="gz::sim::systems::Imu"/>
     </gazebo>
 
-    <!--xacro:imu_sensor prefix="base" parent="base_link" xyz="0 0 ${base_height/2}"/>
+    <xacro:imu_sensor prefix="base" parent="base_link" xyz="0 0 ${base_height/2}"/>
     <xacro:imu_sensor prefix="arm1" parent="arm_1_link" xyz="0 0 0"/>
     <xacro:imu_sensor prefix="arm2" parent="arm_2_link" xyz="0 0 0"/>
-    <xacro:imu_sensor prefix="gripper" parent="base_gripper_link" xyz="0 0 0"/-->
+    <xacro:imu_sensor prefix="gripper" parent="base_gripper_link" xyz="0 0 0"/>
 
 </robot>

@@ -44,6 +44,7 @@ class JointPID:
 class ScaraControl(Node):
     def __init__(self):
         super().__init__('cmd_pub')
+        self.get_logger().info("Scara Node started.", once=True)
 
         #Manipulator lengths.
         self.l1 = 0.425     #First arm
@@ -59,7 +60,7 @@ class ScaraControl(Node):
         self.block_received = False
         self.pid1 = JointPID(5, 0.5, 1, self.theta1)
         self.pid2 = JointPID(5, 0.5, 1, self.theta2)
-        self.heightPid = JointPID(500, 0, 100, self.height)
+        self.heightPid = JointPID(500, 10, 100, self.height)
 
         #current positions:
         self.current_theta1 = 0.0
@@ -80,6 +81,7 @@ class ScaraControl(Node):
         self.heightSub = self.create_subscription(Float32, '/scara/height_sensor', self.currentHeightSetter, 10)
         self.timerpid = self.create_timer(0.02, self.pidCalc)
 
+        
     def currentHeightSetter(self, msg):
         self.current_height = msg.data
 
@@ -109,6 +111,10 @@ class ScaraControl(Node):
         self.arm2Pub.publish(cmd2_msg)
         self.heightPub.publish(cmdHeight)
 
+        self.get_logger().info(f"Arm1 Error: {self.pid1.prev_error}", throttle_duration_sec = 1)
+        self.get_logger().info(f"Arm2 Error: {self.pid2.prev_error}",throttle_duration_sec = 1)
+        self.get_logger().info(f"Height error: {self.heightPid.prev_error}",throttle_duration_sec = 1)
+
         if self.manipulator_state == "Retract Arm":
             if (self.pid1.confirmation) and (self.pid2.confirmation) and (self.heightPid.confirmation):
                 confirmation.data = "Arm Retracted"
@@ -133,28 +139,31 @@ class ScaraControl(Node):
         if self.manipulator_state == "Retract Arm":
             self.goal[0] = -0.775
             self.goal[1] = 0
-            self.height = 0.09
-            self.get_logger().info(f"Retraindo braço...")
+            self.height = 0.05
 
         elif self.manipulator_state == "Place Block":
             self.goal[0] = 0.775
             self.goal[1] = 0
-            self.height = 0.3
+            self.height = 0.35
 
         elif self.manipulator_state == "Pick Block" and self.block_received:
             self.goal[0] = self.block_pose[0]
             self.goal[1] = self.block_pose[1]
-            self.height = 0.3
+            self.height = 0.35
 
         elif self.manipulator_state == "Stand By":
             self.goal[0] = self.goal[0]
             self.goal[1] = self.goal[1]
             self.height = self.height
+        
+        elif self.manipulator_state == "Pick Block" and not self.block_received:
+            self.get_logger.info("Mising block's coordinates", once=True)
 
     def block_pose_setter(self, msg):
         self.block_pose[0] = msg.data[0]
         self.block_pose[1] = msg.data[1]
         self.block_received = True
+        self.get_logger().info("Block received", once=True)
             
     def thetasCalc(self):
             #Calculating theta2:
@@ -168,16 +177,17 @@ class ScaraControl(Node):
     def state_setter(self, msg):
         self.pid1.confirmation = False   ###MSG para trocar de estado deve ser enviado apenas UMA vez.
         self.pid2.confirmation = False
+        self.heightPid.confirmation = False
         if msg.data == "Retract":
             self.manipulator_state = "Retract Arm"
-            self.get_logger().info("Retraindo")
+            self.get_logger().info("Retract state setted", once=True)
         elif msg.data == "Pick Block":
             self.manipulator_state = "Pick Block"
-            self.get_logger().info("Pegando bloco")
+            self.get_logger().info("Pick block state setted", once=True)
 
         elif msg.data == "Place Block":
             self.manipulator_state = "Place Block"  
-            self.get_logger().info("Colocando bloco.")
+            self.get_logger().info("Placing block state setted", once = True)
       
 
 def main(args = None):
