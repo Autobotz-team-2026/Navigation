@@ -8,10 +8,11 @@ Panels:
         - /Status1
         - /RobotModel1
         - /Map1
-        - /Map1/Status1
+        - /Map1/Topic1
         - /Map1/Update Topic1
         - /LaserScan1
         - /Global Plan1
+        - /Map2
       Splitter Ratio: 0.5
     Tree Height: 650
   - Class: rviz_common/Selection
@@ -78,23 +79,19 @@ Visualization Manager:
           Value: true
         camera_link_optical:
           Value: true
+        distance_sensor_frame:
+          Value: true
         first_support_scara_link:
           Value: true
         front_left_wheel_link:
           Value: true
         front_right_wheel_link:
           Value: true
-        imu_arm1_link:
-          Value: true
-        imu_arm2_link:
-          Value: true
-        imu_base_link:
-          Value: true
-        imu_gripper_link:
-          Value: true
         laser_frame:
           Value: true
         left_gripper_link:
+          Value: true
+        map:
           Value: true
         movable_scara_link:
           Value: true
@@ -110,53 +107,44 @@ Visualization Manager:
           Value: true
         support_link:
           Value: true
-        ultrasonic_height_frame:
-          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: false
       Tree:
-        base_footprint:
-          base_link:
-            base_scara_link:
-              first_support_scara_link:
-                movable_scara_link:
-                  arm_1_link:
-                    arm_2_link:
-                      base_gripper_link:
-                        camera_link:
-                          camera_link_optical:
-                            {}
-                        imu_gripper_link:
-                          {}
-                        left_gripper_link:
-                          {}
-                        right_gripper_link:
-                          {}
-                      imu_arm2_link:
-                        {}
-                    imu_arm1_link:
-                      {}
-                second_support_scara_link:
-                  ultrasonic_height_frame:
-                    {}
-            front_left_wheel_link:
-              {}
-            front_right_wheel_link:
-              {}
-            imu_base_link:
-              {}
-            rear_left_wheel_link:
-              {}
-            rear_right_wheel_link:
-              {}
-            support_link:
-              laser_frame:
-                {}
-        odom:
+        map:
           {}
+        odom:
+          base_footprint:
+            base_link:
+              base_scara_link:
+                first_support_scara_link:
+                  movable_scara_link:
+                    arm_1_link:
+                      arm_2_link:
+                        base_gripper_link:
+                          camera_link:
+                            camera_link_optical:
+                              {}
+                          left_gripper_link:
+                            {}
+                          right_gripper_link:
+                            {}
+                  second_support_scara_link:
+                    distance_sensor_frame:
+                      {}
+              front_left_wheel_link:
+                {}
+              front_right_wheel_link:
+                {}
+              rear_left_wheel_link:
+                {}
+              rear_right_wheel_link:
+                {}
+              support_link:
+                laser_frame:
+                  {}
       Update Interval: 0
       Value: true
     - Alpha: 0.6000000238418579
@@ -215,6 +203,11 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        distance_sensor_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         first_support_scara_link:
           Alpha: 1
           Show Axes: false
@@ -230,22 +223,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        imu_arm1_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        imu_arm2_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        imu_base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        imu_gripper_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         laser_frame:
           Alpha: 1
           Show Axes: false
@@ -286,11 +263,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        ultrasonic_height_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Mass Properties:
         Inertia: false
         Mass: false
@@ -309,7 +281,7 @@ Visualization Manager:
       Name: Map
       Topic:
         Depth: 5
-        Durability Policy: Volatile
+        Durability Policy: Transient Local
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
@@ -384,10 +356,33 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /plan
       Value: true
+    - Alpha: 0.699999988079071
+      Binary representation: false
+      Binary threshold: 100
+      Class: rviz_default_plugins/Map
+      Color Scheme: costmap
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /global_costmap/costmap
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /global_costmap/costmap_updates
+      Use Timestamp: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: odom
+    Fixed Frame: map
     Frame Rate: 30
   Name: root
   Tools:
