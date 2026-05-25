@@ -50,4 +50,15 @@
         </plugin>
     </gazebo>
 
+    <gazebo>
+    <plugin filename="libgz-sim-pose-publisher-system.so"
+            name="gz::sim::systems::PosePublisher">
+        <publish_model_pose>true</publish_model_pose>
+        <publish_nested_model_pose>false</publish_nested_model_pose>
+        <publish_link_pose>false</publish_link_pose>
+        <use_pose_vector_msg>false</use_pose_vector_msg>
+        <update_frequency>50</update_frequency>
+    </plugin>
+  </gazebo>
+
 </robot>

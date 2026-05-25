@@ -114,6 +114,20 @@
     </model>
 
     <model name='red_tag_0'>
+      <plugin filename="libgz-sim-pose-publisher-system.so"
+            name="gz::sim::systems::PosePublisher">
+        <!-- Ativa a publicação da pose do modelo principal -->
+        <publish_model_pose>true</publish_model_pose>
+        
+        <!-- Desativa a publicação dos links e modelos aninhados para não gerar conflito -->
+        <publish_link_pose>false</publish_link_pose>
+        <publish_nested_model_pose>false</publish_nested_model_pose>
+        
+        <!-- OBRIGATÓRIO: false para enviar uma mensagem Pose simples (não um array) -->
+        <use_pose_vector_msg>false</use_pose_vector_msg>
+        
+        <update_frequency>50</update_frequency>
+      </plugin>
       <static>false</static>
       <pose>6.7 1.7 0.340 0 0 0</pose> <link name='link'>
       <inertial>
@@ -173,6 +187,20 @@
     </model>
 
     <model name='blue_tag_1'>
+      <plugin filename="libgz-sim-pose-publisher-system.so"
+            name="gz::sim::systems::PosePublisher">
+        <!-- Ativa a publicação da pose do modelo principal -->
+        <publish_model_pose>true</publish_model_pose>
+        
+        <!-- Desativa a publicação dos links e modelos aninhados para não gerar conflito -->
+        <publish_link_pose>false</publish_link_pose>
+        <publish_nested_model_pose>false</publish_nested_model_pose>
+        
+        <!-- OBRIGATÓRIO: false para enviar uma mensagem Pose simples (não um array) -->
+        <use_pose_vector_msg>false</use_pose_vector_msg>
+        
+        <update_frequency>50</update_frequency>
+      </plugin>
       <static>false</static>
       <pose>6.7 2.3 0.340 0 0 0</pose> <link name='link'>
       <inertial>
