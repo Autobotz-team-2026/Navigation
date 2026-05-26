@@ -48,7 +48,7 @@ class ScaraControl(Node):
 
         #Manipulator lengths.
         self.l1 = 0.425     #First arm
-        self.l2 = 0.35      #Second arm
+        self.l2 = 0.34      #Second arm
 
         #Initials variables.
         self.goal = [0.775, 0.0]                   #Final goal to manipulator.
@@ -69,7 +69,7 @@ class ScaraControl(Node):
 
         #Publishers and Subscribers
         self.stateCmdSub = self.create_subscription(String, '/scara/command', self.state_setter, 10) #Take the string from "/scara/command" and set the manipulator's state: "Retract", "Pick Block" or "Place Block".
-        self.goalSub = self.create_subscription(Float32MultiArray, '/goal_pose', self.block_pose_setter, 10) #Take the goal from "/goal_pose" and set the variables.
+        self.goalSub = self.create_subscription(Float32MultiArray, '/block_pose', self.block_pose_setter, 10) #Take the goal from "/goal_pose" and set the variables.
         self.arm1Pub = self.create_publisher(Float64, '/scara_arm_joint1/cmd_pos', 10) 
         self.arm2Pub = self.create_publisher(Float64, '/scara_arm_joint2/cmd_pos', 10)
         self.heightPub = self.create_publisher(Float64, '/scara_height_joint0/cmd_pos', 10)
@@ -157,7 +157,7 @@ class ScaraControl(Node):
             self.height = self.height
         
         elif self.manipulator_state == "Pick Block" and not self.block_received:
-            self.get_logger.info("Mising block's coordinates", once=True)
+            self.get_logger().info("Mising block's coordinates", once=True)
 
     def block_pose_setter(self, msg):
         self.block_pose[0] = msg.data[0]

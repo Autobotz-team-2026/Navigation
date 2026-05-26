@@ -1,8 +1,9 @@
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Pose
-from geometry_msgs.msg import PoseArray
-from geometry_msgs.msg import Vector3
+from geometry_msgs.msg import Pose, PoseArray
+from std_msgs.msg import Float32MultiArray
+from math import sqrt
+
 
 
 class BlockPublisher(Node):
@@ -17,8 +18,8 @@ class BlockPublisher(Node):
         self.blueBlockSub = self.create_subscription(Pose, '/blue/block/pose', self.blueSetter, 10)
         self.baseSub = self.create_subscription(PoseArray, '/robo_ground_truth/pose', self.correctedPose, 10)
 
-        self.redPub = self.create_publisher(Vector3, '/red/pose', 10)
-        self.bluePub = self.create_publisher(Vector3, '/blue/pose', 10)
+        self.goalPub = self.create_publisher(Float32MultiArray, '/block_pose', 10)
+
         
     def redSetter(self, msg):
         self.redBlock = msg
@@ -35,27 +36,30 @@ class BlockPublisher(Node):
             return
         
         robo_pose = msg.poses[0]
-        rightX_red = self.redBlock.position.x - robo_pose.position.x
+        rightX_red = self.redBlock.position.x - robo_pose.position.x - 0.275
         rightY_red = self.redBlock.position.y - robo_pose.position.y
         rightZ_red = self.redBlock.position.z - robo_pose.position.z
 
-        rightX_blue = self.blueBlock.position.x - robo_pose.position.x
+        rightX_blue = self.blueBlock.position.x - robo_pose.position.x - 0.275
         rightY_blue = self.blueBlock.position.y - robo_pose.position.y
         rightZ_blue = self.blueBlock.position.z - robo_pose.position.z
 
-        rightRed = Vector3()
+        distBlue = sqrt(rightX_blue**2 + rightY_blue**2)
+        distRed = sqrt(rightX_red**2 + rightY_red**2)
 
-        rightBlue = Vector3()
-        rightRed.x = rightX_red
-        rightRed.y = rightY_red
-        rightRed.z = rightZ_red
+        if (distBlue and distRed) > 0.775:
+            return
+        
+        if (distBlue <= distRed):
+            pose = Float32MultiArray()
+            pose.data = [rightX_blue, rightY_blue]
+            self.goalPub.publish(pose)
 
-        rightBlue.x = rightX_blue
-        rightBlue.y = rightY_blue
-        rightBlue.z = rightZ_blue
+        elif (distRed < distBlue):
+            pose = Float32MultiArray()
+            pose.data = [rightX_red, rightY_red] #Inverted
+            self.goalPub.publish(pose)
 
-        self.redPub.publish(rightRed)
-        self.bluePub.publish(rightBlue)
 
         
 def main(args = None):

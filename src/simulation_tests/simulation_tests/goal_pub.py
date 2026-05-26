@@ -9,7 +9,7 @@ class GoalPublisher(Node):
         self.goal_x = float(x)
         self.goal_y = float(y)
 
-        self.goalPub = self.create_publisher(Float32MultiArray, '/goal_pose', 10)
+        self.goalPub = self.create_publisher(Float32MultiArray, '/block_pose', 10)
         self.pubTimer = self.create_timer(1, self.pose_pub)
 
     def pose_pub(self):
