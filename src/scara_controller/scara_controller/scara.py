@@ -72,12 +72,14 @@ class ScaraControl(Node):
         self.goalSub = self.create_subscription(Float32MultiArray, '/block_pose', self.block_pose_setter, 10) #Take the goal from "/goal_pose" and set the variables.
         self.arm1Pub = self.create_publisher(Float64, '/scara_arm_joint1/cmd_pos', 10) 
         self.arm2Pub = self.create_publisher(Float64, '/scara_arm_joint2/cmd_pos', 10)
+        self.imusSub = self.create_subscription(Float32MultiArray, '/imus_yaw', self.currentArmSetter, 10)
+        self.heightSub = self.create_subscription(Float32, '/scara/height_sensor', self.currentHeightSetter, 10)
+        
+        self.loopTimer = self.create_timer(0.02, self.mainControl)
+
         self.heightPub = self.create_publisher(Float64, '/scara_height_joint0/cmd_pos', 10)
         self.clawRotPub = self.create_publisher(Float64, '/scara_claw_rotation_joint0/cmd_pos', 10)
         self.confirmationPub = self.create_publisher(String, '/scara/confirmation', 10)
-        self.imusSub = self.create_subscription(Float32MultiArray, '/imus_yaw', self.currentArmSetter, 10)
-        self.heightSub = self.create_subscription(Float32, '/scara/height_sensor', self.currentHeightSetter, 10)
-        self.loopTimer = self.create_timer(0.02, self.mainControl)
 
     def mainControl(self):
 
@@ -147,9 +149,9 @@ class ScaraControl(Node):
         self.arm1Pub.publish(cmd1_msg)
         self.arm2Pub.publish(cmd2_msg)
         
-        self.get_logger().info(f"Arm1 Error: {self.pid1.prev_error}", throttle_duration_sec = 2)
-        self.get_logger().info(f"Arm2 Error: {self.pid2.prev_error}",throttle_duration_sec = 2)
-        self.get_logger().info(f"Height error: {self.heightPid.prev_error}",throttle_duration_sec = 2)
+        #self.get_logger().info(f"Arm1 Error: {self.pid1.prev_error}", throttle_duration_sec = 2)
+        #self.get_logger().info(f"Arm2 Error: {self.pid2.prev_error}",throttle_duration_sec = 2)
+        #self.get_logger().info(f"Height error: {self.heightPid.prev_error}",throttle_duration_sec = 2)
  
         
     def currentHeightSetter(self, msg):
