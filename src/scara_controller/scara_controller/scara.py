@@ -39,8 +39,7 @@ class JointPID:
         else: 
             self.confirmation = False
 
-        return output
-    
+        return output 
 
 class ScaraControl(Node):
     def __init__(self):
@@ -76,22 +75,58 @@ class ScaraControl(Node):
         self.heightPub = self.create_publisher(Float64, '/scara_height_joint0/cmd_pos', 10)
         self.clawRotPub = self.create_publisher(Float64, '/scara_claw_rotation_joint0/cmd_pos', 10)
         self.confirmationPub = self.create_publisher(String, '/scara/confirmation', 10)
-        self.timerGoalSetter = self.create_timer(0.02, self.goal_setter)
-        self.timerCinematic = self.create_timer(0.02, self.thetasCalc)
         self.imusSub = self.create_subscription(Float32MultiArray, '/imus_yaw', self.currentArmSetter, 10)
         self.heightSub = self.create_subscription(Float32, '/scara/height_sensor', self.currentHeightSetter, 10)
-        self.timerpid = self.create_timer(0.02, self.pidCalc)
+        self.loopTimer = self.create_timer(0.02, self.mainControl)
 
+    def mainControl(self):
+
+        confirmMsg = String()
+        if self.manipulator_state == "Retract Arm":
+            self.height = 0.05
+            if self.heightPid.confirmation: 
+                self.goal[0] = -0.775
+                self.goal[1] = 0
+                if self.pid1.confirmation and self.pid2.confirmation:
+                    confirmMsg.data = "Arm Retracted"
+                    self.confirmationPub.publish(confirmMsg)
+                    self.manipulator_state = "Stand By"
+
+
+        elif self.manipulator_state == "Place Block":
+            self.goal[0] = 0.775
+            self.goal[1] = 0
+            if self.pid1.confirmation and self.pid2.confirmation:
+                self.height = 0.35
+                if self.heightPid.confirmation:
+                    confirmMsg.data = "Block Placed"
+                    self.confirmationPub.publish(confirmMsg)
+                    self.manipulator_state = "Stand By"
+
+        elif self.manipulator_state == "Pick Block" and self.block_received:
+            self.goal[0] = self.block_pose[0]
+            self.goal[1] = self.block_pose[1]
+            if self.pid1.confirmation and self.pid2.confirmation:
+                self.height = 0.35
+                if self.heightPid.confirmation:
+                    confirmMsg.data = "Block Picked"
+                    self.confirmationPub.publish(confirmMsg)
+                    self.manipulator_state = "Stand By"
+
+        elif self.manipulator_state == "Stand By":
+            pass
         
-    def currentHeightSetter(self, msg):
-        self.current_height = msg.data
+        elif self.manipulator_state == "Pick Block" and (not self.block_received):
+            self.get_logger().info("Mising block's coordinates", once=True)
+        
+        #Calculating theta2:
+        cos_theta2 = (self.goal[0]**2 + self.goal[1]**2 - self.l1**2 - self.l2**2)/(2*self.l1*self.l2)
+        cos_theta2 = max(-1.0, min(1.0, cos_theta2))
+        self.theta2 = math.acos(cos_theta2)
 
-    def currentArmSetter(self, msg):
-        self.current_theta1 = msg.data[1]
-        self.current_theta2 = msg.data[2]
+        #Calculating theta1:
+        self.theta1 = math.atan2(self.goal[1], self.goal[0]) - math.atan2(self.l2*math.sin(self.theta2), self.l1 + self.l2*cos_theta2)
 
-    def pidCalc(self):
-        confirmation = String()
         self.pid1.goal = self.theta1
         self.pid2.goal = self.theta2
         self.heightPid.goal = self.height
@@ -102,110 +137,34 @@ class ScaraControl(Node):
         v_control2 = self.pid2.calculate(self.current_theta2, now_sec)
         v_controlHeight = -self.heightPid.calculate(self.current_height, now_sec)
 
+        cmd1_msg = Float64()
+        cmd1_msg.data = v_control1
+        cmd2_msg = Float64()
+        cmd2_msg.data = v_control2
+        cmdHeight = Float64()
+        cmdHeight.data = v_controlHeight
+        self.heightPub.publish(cmdHeight)
+        self.arm1Pub.publish(cmd1_msg)
+        self.arm2Pub.publish(cmd2_msg)
+        
         self.get_logger().info(f"Arm1 Error: {self.pid1.prev_error}", throttle_duration_sec = 2)
         self.get_logger().info(f"Arm2 Error: {self.pid2.prev_error}",throttle_duration_sec = 2)
         self.get_logger().info(f"Height error: {self.heightPid.prev_error}",throttle_duration_sec = 2)
-
-        if self.manipulator_state == "Stand By":
-            cmd1_msg = Float64()
-            cmd1_msg.data = v_control1
-            cmd2_msg = Float64()
-            cmd2_msg.data = v_control2
-            cmdHeight = Float64()
-            cmdHeight.data = v_controlHeight
-            self.heightPub.publish(cmdHeight)
-            self.arm1Pub.publish(cmd1_msg)
-            self.arm2Pub.publish(cmd2_msg)
-
-        if self.manipulator_state == "Retract Arm":
-            cmdHeight = Float64()
-            cmdHeight.data = v_controlHeight
-            self.heightPub.publish(cmdHeight)
-            if (self.heightPid.confirmation):
-                cmd1_msg = Float64()
-                cmd1_msg.data = v_control1
-                cmd2_msg = Float64()
-                cmd2_msg.data = v_control2
-                self.arm1Pub.publish(cmd1_msg)
-                self.arm2Pub.publish(cmd2_msg)
-                if self.pid1.confirmation and self.pid2.confirmation:
-                    confirmation.data = "Arm Retracted"
-                    self.confirmationPub.publish(confirmation)
-                    self.manipulator_state = "Stand By"
-                    
-        if self.manipulator_state == "Pick Block":
-            cmd1_msg = Float64()
-            cmd1_msg.data = v_control1
-            cmd2_msg = Float64()
-            cmd2_msg.data = v_control2
-            self.arm1Pub.publish(cmd1_msg)
-            self.arm2Pub.publish(cmd2_msg)
-            if (self.pid1.confirmation) and (self.pid2.confirmation):
-                cmdHeight = Float64()
-                cmdHeight.data = v_controlHeight
-                self.heightPub.publish(cmdHeight)
-                if (self.heightPid.confirmation):
-                    confirmation.data = "Block Picked"
-                    self.confirmationPub.publish(confirmation)
-                    self.manipulator_state = "Stand By"
-
-        if self.manipulator_state == "Place Block":
-            cmd1_msg = Float64()
-            cmd1_msg.data = v_control1
-            cmd2_msg = Float64()
-            cmd2_msg.data = v_control2
-            self.arm1Pub.publish(cmd1_msg)
-            self.arm2Pub.publish(cmd2_msg)
-            if (self.pid1.confirmation) and (self.pid2.confirmation):
-                cmdHeight = Float64()
-                cmdHeight.data = v_controlHeight
-                self.heightPub.publish(cmdHeight)
-                if (self.heightPid.confirmation):
-                    confirmation.data = "Block Placed"
-                    self.confirmationPub.publish(confirmation)
-                    self.manipulator_state = "Stand By"
-            
-
-    def goal_setter(self):
-
-        if self.manipulator_state == "Retract Arm":
-            self.goal[0] = -0.775
-            self.goal[1] = 0
-            self.height = 0.05
-
-        elif self.manipulator_state == "Place Block":
-            self.goal[0] = 0.775
-            self.goal[1] = 0
-            self.height = 0.35
-
-        elif self.manipulator_state == "Pick Block" and self.block_received:
-            self.goal[0] = self.block_pose[0]
-            self.goal[1] = self.block_pose[1]
-            self.height = 0.35
-
-        elif self.manipulator_state == "Stand By":
-            self.goal[0] = self.goal[0]
-            self.goal[1] = self.goal[1]
-            self.height = self.height
+ 
         
-        elif self.manipulator_state == "Pick Block" and (not self.block_received):
-            self.get_logger().info("Mising block's coordinates", once=True)
+    def currentHeightSetter(self, msg):
+        self.current_height = msg.data
+
+    def currentArmSetter(self, msg):
+        self.current_theta1 = msg.data[1]
+        self.current_theta2 = msg.data[2]                   
 
     def block_pose_setter(self, msg):
         self.block_pose[0] = msg.data[0]
         self.block_pose[1] = msg.data[1]
         self.block_received = True
         self.get_logger().info("Block received", once=True)
-            
-    def thetasCalc(self):
-            #Calculating theta2:
-        cos_theta2 = (self.goal[0]**2 + self.goal[1]**2 - self.l1**2 - self.l2**2)/(2*self.l1*self.l2)
-        cos_theta2 = max(-1.0, min(1.0, cos_theta2))
-        self.theta2 = math.acos(cos_theta2)
-
-            #Calculating theta1:
-        self.theta1 = math.atan2(self.goal[1], self.goal[0]) - math.atan2(self.l2*math.sin(self.theta2), self.l1 + self.l2*cos_theta2)
-
+             
     def state_setter(self, msg):
         self.pid1.confirmation = False   ###MSG para trocar de estado deve ser enviado apenas UMA vez.
         self.pid2.confirmation = False
