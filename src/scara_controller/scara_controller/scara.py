@@ -3,6 +3,7 @@ import rclpy
 from rclpy.node import Node
 import math
 from std_msgs.msg import Float64, Float32, String, Float32MultiArray
+import time
 
 
 class JointPID:
@@ -26,7 +27,7 @@ class JointPID:
         error = self.goal - current_pos
 
         self.integral += error * dt
-        self.integral = max(min(self.integral, 1.0), -1.0)
+        #self.integral = max(min(self.integral, 1.0), -1.0)
         derivative = (error - self.prev_error) / dt
 
         output = (self.kp * error) + (self.ki * self.integral) + (self.kd * derivative)
@@ -60,7 +61,7 @@ class ScaraControl(Node):
         self.block_received = False
         self.pid1 = JointPID(5, 0.5, 1, 0.005, self.theta1)
         self.pid2 = JointPID(5, 0.5, 1, 0.005, self.theta2)
-        self.heightPid = JointPID(500, 10, 100, 0.04, self.height)
+        self.heightPid = JointPID(500, 10, 80, 0.07, self.height)
 
         #current positions:
         self.current_theta1 = 0.0
@@ -70,13 +71,16 @@ class ScaraControl(Node):
         #Publishers and Subscribers
         self.stateCmdSub = self.create_subscription(String, '/scara/command', self.state_setter, 10) #Take the string from "/scara/command" and set the manipulator's state: "Retract", "Pick Block" or "Place Block".
         self.goalSub = self.create_subscription(Float32MultiArray, '/block_pose', self.block_pose_setter, 10) #Take the goal from "/goal_pose" and set the variables.
-        self.arm1Pub = self.create_publisher(Float64, '/scara_arm_joint1/cmd_pos', 10) 
-        self.arm2Pub = self.create_publisher(Float64, '/scara_arm_joint2/cmd_pos', 10)
+        
         self.imusSub = self.create_subscription(Float32MultiArray, '/imus_yaw', self.currentArmSetter, 10)
         self.heightSub = self.create_subscription(Float32, '/scara/height_sensor', self.currentHeightSetter, 10)
         
         self.loopTimer = self.create_timer(0.02, self.mainControl)
 
+        self.arm1Pub = self.create_publisher(Float64, '/scara_arm_joint1/cmd_pos', 10) 
+        self.arm2Pub = self.create_publisher(Float64, '/scara_arm_joint2/cmd_pos', 10)
+        self.leftGripperPub = self.create_publisher(Float64, '/scara_left_gripper/cmd_pos', 10)
+        self.rightGripperPub = self.create_publisher(Float64, '/scara_right_gripper/cmd_pos', 10)
         self.heightPub = self.create_publisher(Float64, '/scara_height_joint0/cmd_pos', 10)
         self.clawRotPub = self.create_publisher(Float64, '/scara_claw_rotation_joint0/cmd_pos', 10)
         self.confirmationPub = self.create_publisher(String, '/scara/confirmation', 10)
@@ -90,6 +94,13 @@ class ScaraControl(Node):
                 self.goal[0] = -0.775
                 self.goal[1] = 0
                 if self.pid1.confirmation and self.pid2.confirmation:
+                    velRight = Float64()
+                    velRight.data = 5.0
+                    velLeft = Float64()
+                    velLeft.data = -5.0
+                    time.sleep(2)
+                    self.rightGripperPub.publish(velRight)
+                    self.leftGripperPub.publish(velLeft)
                     confirmMsg.data = "Arm Retracted"
                     self.confirmationPub.publish(confirmMsg)
                     self.manipulator_state = "Stand By"
@@ -101,6 +112,13 @@ class ScaraControl(Node):
             if self.pid1.confirmation and self.pid2.confirmation:
                 self.height = 0.35
                 if self.heightPid.confirmation:
+                    velRight = Float64()
+                    velRight.data = -5.0
+                    velLeft = Float64()
+                    velLeft.data = 5.0
+                    time.sleep(2)
+                    self.rightGripperPub.publish(velRight)
+                    self.leftGripperPub.publish(velLeft)
                     confirmMsg.data = "Block Placed"
                     self.confirmationPub.publish(confirmMsg)
                     self.manipulator_state = "Stand By"
@@ -111,6 +129,13 @@ class ScaraControl(Node):
             if self.pid1.confirmation and self.pid2.confirmation:
                 self.height = 0.35
                 if self.heightPid.confirmation:
+                    velRight = Float64()
+                    velRight.data = 5.0
+                    velLeft = Float64()
+                    velLeft.data = -5.0
+                    time.sleep(2)
+                    self.rightGripperPub.publish(velRight)
+                    self.leftGripperPub.publish(velLeft)
                     confirmMsg.data = "Block Picked"
                     self.confirmationPub.publish(confirmMsg)
                     self.manipulator_state = "Stand By"
@@ -175,6 +200,12 @@ class ScaraControl(Node):
             self.manipulator_state = "Retract Arm"
             self.get_logger().info("Retract state setted", once=True)
         elif msg.data == "Pick Block" and self.block_received:
+            velRight = Float64()
+            velRight.data = -5.0
+            velLeft = Float64()
+            velLeft.data = 5.0 
+            self.rightGripperPub.publish(velRight)
+            self.leftGripperPub.publish(velLeft)
             self.manipulator_state = "Pick Block"
             self.get_logger().info("Pick block state setted", once=True)
         
