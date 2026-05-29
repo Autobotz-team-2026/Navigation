@@ -25,6 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
             'nav_states = commander_pkg.nav_states:main',
+            'central_controller = commander_pkg.central_controller:main',
         ],
     },
 )

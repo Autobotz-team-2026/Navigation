@@ -23,12 +23,12 @@ INITIAL_POSE = (0.0, 0.0, 0.0, 1.0)
 # x e y são as coordenadas no mapa
 # z e w são o quaternion de orientação 
 
-PICK_POSE = (5.911, 1.996, -0.026, 1.0)
+PICK_POSE = (5.911, 1.996, 0.0, 1.0)
 
 
-PLACE_POSE = (4.087, 12.971, 0.728, 0.685)
+PLACE_POSE = (4.087, 12.971, 0.0, 0.50)
 
-FINISH_POSE = (3.612, 7.020, 1.0, 0.0)
+FINISH_POSE = (3.55469, 6.77468, 0.0, 0.0)
 
 
 

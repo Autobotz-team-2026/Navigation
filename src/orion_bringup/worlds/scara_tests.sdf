@@ -136,7 +136,11 @@
             <specular>0 0 0 1</specular>
             <pbr>
               <metal>
+<<<<<<< HEAD
                 <albedo_map>package://orion_bringup/tags/high_res_tag_0.png</albedo_map>
+=======
+                <albedo_map>file:///home/lln/Navigation/install/orion_bringup/share/orion_bringup/tags/high_res_tag_0.png</albedo_map>
+>>>>>>> pedro_nav
               </metal>
             </pbr>
           </material>
@@ -195,7 +199,11 @@
             <specular>0 0 0 1</specular>
             <pbr>
               <metal>
+<<<<<<< HEAD
                 <albedo_map>package://orion_bringup/tags/high_res_tag_1.png</albedo_map>
+=======
+                <albedo_map>file:///home/lln/Navigation/install/orion_bringup/share/orion_bringup/tags/high_res_tag_1.png</albedo_map>
+>>>>>>> pedro_nav
               </metal>
             </pbr>
           </material>
@@ -220,7 +228,11 @@
           <specular>0 0 0 1</specular>
           <pbr>
             <metal>
+<<<<<<< HEAD
               <albedo_map>package://orion_bringup/tags/high_res_tag_0.png</albedo_map>
+=======
+              <albedo_map>file:///home/lln/Navigation/install/orion_bringup/share/orion_bringup/tags/high_res_tag_0.png</albedo_map>
+>>>>>>> pedro_nav
             </metal>
           </pbr>
         </material>
@@ -245,7 +257,11 @@
           <specular>0 0 0 1</specular>
           <pbr>
             <metal>
+<<<<<<< HEAD
               <albedo_map>package://orion_bringup/tags/high_res_tag_1.png</albedo_map>
+=======
+              <albedo_map>file:///home/lln/Navigation/install/orion_bringup/share/orion_bringup/tags/high_res_tag_1.png</albedo_map>
+>>>>>>> pedro_nav
             </metal>
           </pbr>
         </material>
