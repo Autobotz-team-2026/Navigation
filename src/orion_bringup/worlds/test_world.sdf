@@ -107,17 +107,17 @@
       <self_collide>false</self_collide>
     </model>
     <include>
-      <uri>file:///home/vinicius/.gz/fuel/fuel.gazebosim.org/openrobotics/models/picking_shelves/1</uri>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Picking Shelves</uri>
       <name>Picking_Shelves</name>
       <pose>2.1901338952683371 4.1623284882122498 -5.7085468586844992e-07 -2.0101105453874727e-19 -1.3389888536687075e-19 -9.711028092149387e-28</pose>
     </include>
     <include>
-      <uri>file:///home/vinicius/.gz/fuel/fuel.gazebosim.org/openrobotics/models/pallet_standard/1</uri>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pallet Standard</uri>
       <name>Pallet_Standard</name>
       <pose>2.4658167817268719 -2.2473337337540467 -5.7386337971207556e-07 -7.3942693238469982e-20 -7.6111408433687685e-20 1.4858490497186293e-27</pose>
     </include>
     <include>
-      <uri>file:///home/vinicius/.gz/fuel/fuel.gazebosim.org/openrobotics/models/forklift/1</uri>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Forklift</uri>
       <name>Forklift</name>
       <pose>5.8469879012080588 2.3945399824693316 0.0084911037866490444 -0.012981223934759574 1.3041666707659956e-09 3.8561860021808325e-10</pose>
     </include>
