@@ -1,11 +1,11 @@
 from setuptools import find_packages, setup
 
-package_name = 'scara_controller'
+package_name = 'simulation_tests'
 
 setup(
     name=package_name,
     version='0.0.0',
-    packages=[package_name],
+    packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
@@ -24,9 +24,9 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'scara_controller = scara_controller.scara:main',
-            'sensor_tests = scara_controller.sensors_test:main',
-            'height_sensor = scara_controller.laser_to_distance_sensor_convertor:main'
+            'goal_pub = simulation_tests.goal_pub:main',
+            'block_pub = simulation_tests.block_pub:main'
+
         ],
     },
 )

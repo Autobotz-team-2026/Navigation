@@ -135,4 +135,8 @@
   ros_type_name: "geometry_msgs/msg/PoseArray"
   gz_type_name: "gz.msgs.Pose_V"
   direction: GZ_TO_ROS
+<<<<<<< HEAD
   
+=======
+  
+>>>>>>> jpedro
