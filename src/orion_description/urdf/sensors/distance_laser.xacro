@@ -1,41 +1,45 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <xacro:macro name="ultrasonic_module" params="
+    <xacro:macro name="lidar_module" params="
         parent
-        name:=ultrasonic
-        width:=0.02
-        depth:=0.01
-        mass:=0.05
+        name:=distance_sensor
+        radius:=0.02
+        length:=0.01
+        mass:=0.01
         origin_xyz:='0 0 0'
         origin_rpy:='0 0 0'
-        range_min:=0.02
-        range_max:=4.0
+        samples:=360
+        resolution:=1
+        min_angle:=0
+        max_angle:=0
+        range_min:=0.001
+        range_max:=1.0
         range_resolution:=0.01
-        noise_stddev:=0.005
-        update_rate:=20
-        topic:=ultrasonic/range
+        noise_stddev:=0.01
+        update_rate:=10
+        topic:=distance_scan
     ">
 
         <link name="${name}_frame">
             <visual>
                 <geometry>
-                    <box size="${depth} ${width} ${width}"/>
+                    <cylinder radius="${radius}" length="${length}"/>
                 </geometry>
-                <material name="blue"/>
-                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <material name="yellow"/>
+                <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
             </visual>
             <collision>
                 <geometry>
-                    <box size="${depth} ${width} ${width}"/>
+                    <cylinder radius="${radius}" length="${length}"/>
                 </geometry>
-                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
             </collision>
-            <xacro:box_inertia m="${mass}" x="${depth}" y="${width}" z="${width}"
-                               o_xyz="0 0 0" o_rpy="0 0 0"/>
+            <xacro:cylinder_inertia m="${mass}" r="${radius}" h="${length}"
+                                    o_xyz="0 0 0" o_rpy="0 0 0"/>
         </link>
 
-        <joint name="${name}_joint" type="fixed">
+        <joint name="${name}_support" type="fixed">
             <parent link="${parent}"/>
             <child link="${name}_frame"/>
             <origin xyz="${origin_xyz}" rpy="${origin_rpy}"/>
@@ -52,10 +56,10 @@
                 <lidar>
                     <scan>
                         <horizontal>
-                            <samples>1</samples>
-                            <resolution>1</resolution>
-                            <min_angle>0</min_angle>
-                            <max_angle>0</max_angle>
+                            <samples>${samples}</samples>
+                            <resolution>${resolution}</resolution>
+                            <min_angle>${min_angle}</min_angle>
+                            <max_angle>${max_angle}</max_angle>
                         </horizontal>
                     </scan>
                     <range>
@@ -74,10 +78,9 @@
 
     </xacro:macro>
 
- <!-- <xacro:ultrasonic_module parent="second_support_scara_link"
-    name="ultrasonic_height"
-    origin_xyz="0 0 ${-scara_support_radius/2 + 0.03}"
-    origin_rpy="0 1.5708 0"
-    topic="ultrasonic/height"/> -->
-
+    <xacro:lidar_module parent="second_support_scara_link"
+                    origin_xyz="0 0 0"
+                    origin_rpy="0 ${pi/2} 0"
+                    min_angle="0"
+                    max_angle="0"/>
 </robot>

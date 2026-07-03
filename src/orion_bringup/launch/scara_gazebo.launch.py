@@ -1,4 +1,30 @@
+# <launch>
+#     <let name="urdf_path" 
+#          value="$(find-pkg-share orion_description)/urdf/orion_manipulator_standalone.xacro"/>
+        
+#     <!--let name="rviz_config_path"
+#          value="$(find-pkg-share orion_description)/rviz/urdf_config.rviz"/-->
 
+#     <let name="gazebo_config_path"
+#          value="$(find-pkg-share orion_bringup)/config/gazebo_bridge.yaml"/>
+
+#     <node pkg="robot_state_publisher" exec="robot_state_publisher">
+#         <param name="robot_description"
+#                value="$(command 'xacro $(var urdf_path)')"/>
+#     </node>
+
+#     <!--node pkg="rviz2" exec="rviz2" output="screen" args="-d $(var rviz_config_path)"/-->
+
+#     <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py">
+#         <arg name="gz_args" value="$(find-pkg-share orion_bringup)/worlds/scara_tests.sdf -r"/>
+#     </include>
+
+#     <node pkg="ros_gz_sim" exec="create" args="-topic robot_description"/>
+
+#     <node pkg="ros_gz_bridge" exec="parameter_bridge">
+#         <param name="config_file" value="$(var gazebo_config_path)"/>
+#     </node>
+# </launch>
 
 import os
 from ament_index_python.packages import get_package_share_directory
@@ -45,7 +71,7 @@ def generate_launch_description():
     spawn_robot = Node(
         package='ros_gz_sim',
         executable='create',
-        arguments=['-name', 'orion', '-topic', 'robot_description'],
+        arguments=['-topic', 'robot_description'],
     )
 
     bridge = Node(

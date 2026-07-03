@@ -4,65 +4,64 @@
     
     <gazebo>
         <plugin
-            filename="gz-sim-joint-position-controller-system"
-            name="gz::sim::systems::JointPositionController">
+            filename="gz-sim-joint-controller-system"
+            name="gz::sim::systems::JointController">
             <joint_name>scara_base_first_support_joint</joint_name>
             <topic>/model/orion/joint/scara_arm_joint/0/cmd_pos</topic>
-            <p_gain>50.0</p_gain> <i_gain>25.0</i_gain>  <d_gain>5.0</d_gain>
-            <i_max>15.0</i_max>    <i_min>-15.0</i_min>
+            <initial_velocity>0</initial_velocity>
         </plugin>
     </gazebo>
 
     <gazebo>
         <plugin
-            filename="gz-sim-joint-position-controller-system"
-            name="gz::sim::systems::JointPositionController">
+            filename="gz-sim-joint-controller-system"
+            name="gz::sim::systems::JointController">
             <joint_name>first_support_movable_scara_joint</joint_name>
             <topic>/model/orion/joint/scara_height_joint/0/cmd_pos</topic>
-            <p_gain>300.0</p_gain> <i_gain>250.0</i_gain>  <d_gain>90.0</d_gain>
-            <i_max>150.0</i_max>    <i_min>-150.0</i_min>
+            <initial_velocity>0</initial_velocity>
+            <use_force_commands>true</use_force_commands>
+            <p_gain>1</p_gain>
+            <i_gain>0</i_gain>
         </plugin>
-    </gazebo>
+    </gazebo> 
 
     <gazebo>
         <plugin
-            filename="gz-sim-joint-position-controller-system"
-            name="gz::sim::systems::JointPositionController">
+            filename="gz-sim-joint-controller-system"
+            name="gz::sim::systems::JointController">
             <joint_name>arm_joint</joint_name>
             <topic>/model/orion/joint/scara_arm_joint/1/cmd_pos</topic>
-            <p_gain>100.0</p_gain> <i_gain>50.0</i_gain>  <d_gain>15.0</d_gain>
-            <i_max>15.0</i_max>    <i_min>-15.0</i_min>
+            <initial_velocity>0</initial_velocity>
         </plugin>
     </gazebo>
 
     <gazebo>
         <plugin
-            filename="gz-sim-joint-position-controller-system"
-            name="gz::sim::systems::JointPositionController">
+            filename="gz-sim-joint-controller-system"
+            name="gz::sim::systems::JointController">
             <joint_name>arm2_base_gripper_joint</joint_name>
             <topic>/model/orion/joint/scara_claw_rotation_joint/0/cmd_pos</topic>
-            <p_gain>150.0</p_gain> <i_gain>0.50</i_gain>  <d_gain>15.0</d_gain>
-            <i_max>15.0</i_max>    <i_min>-15.0</i_min>
+            <initial_velocity>0</initial_velocity>
         </plugin>
     </gazebo>
 
     <gazebo>
         <plugin
-            filename="gz-sim-joint-position-controller-system"
-            name="gz::sim::systems::JointPositionController">
+            filename="gz-sim-joint-controller-system"
+            name="gz::sim::systems::JointController">
             <joint_name>base_right_gripper_joint</joint_name>
             <topic>/model/orion/joint/scara_gripper/right/cmd_pos</topic>
-            <p_gain>500.0</p_gain> 
+            <initial_velocity>0</initial_velocity>
         </plugin>
     </gazebo>
 
     <gazebo>
         <plugin
-            filename="gz-sim-joint-position-controller-system"
-            name="gz::sim::systems::JointPositionController">
+            filename="gz-sim-joint-controller-system"
+            name="gz::sim::systems::JointController">
             <joint_name>base_left_gripper_joint</joint_name>
             <topic>/model/orion/joint/scara_gripper/left/cmd_pos</topic>
-            <p_gain>500.0</p_gain> 
+            <initial_velocity>0</initial_velocity>
         </plugin>
     </gazebo>
 

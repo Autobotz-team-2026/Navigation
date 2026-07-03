@@ -4,7 +4,7 @@
 
     <xacro:property name="base_scara_length" value="0.3"/>
     <xacro:property name="base_scara_width" value ="0.2"/>
-    <xacro:property name="base_scara_height" value="0.08"/>
+    <xacro:property name="base_scara_height" value="0.10"/>
     <xacro:property name="scara_support_radius" value="0.075"/>
     <xacro:property name="scara_support_length" value="0.05"/>
     <xacro:property name="arm_length" value="0.35"/>
@@ -17,8 +17,8 @@
     <xacro:property name="gripper_width" value ="0.02"/>
     <xacro:property name="gripper_height" value="0.06"/>
 
-    <xacro:property name="base_scara_mass" value="3.0"/>
-    <xacro:property name="scara_support_mass" value="10.0"/>
+    <xacro:property name="base_scara_mass" value="30.0"/>
+    <xacro:property name="scara_support_mass" value="1.0"/>
     <xacro:property name="arm_mass" value="1.0"/>
     <xacro:property name="base_gripper_mass" value="0.2"/>
     <xacro:property name="gripper_mass" value="0.1"/>
@@ -135,7 +135,7 @@
     <joint name="scara_base_first_support_joint" type="revolute">
         <parent link="base_scara_link"/>
         <child link="first_support_scara_link"/>
-        <origin xyz="0.075 0 0.08" rpy="0 0 0"/>
+        <origin xyz="0.075 0 0.09" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
 
         <limit lower="-3.14" upper="3.14" effort="500.0" velocity="1.0"/>
@@ -154,8 +154,8 @@
         <child link="movable_scara_link"/>
         <origin xyz="0 0 0.075" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
-        <limit lower="0" upper="0.45" effort="300.0" velocity="3.0"/>
-        <dynamics friction="20" damping="5"/>
+        <limit lower="0" upper="0.45" effort="1000.0" velocity="0.5"/>
+        <dynamics friction="50" damping="30"/>
     </joint>
 
     <joint name="movable_scara_arm_1_joint" type="fixed">
@@ -185,18 +185,18 @@
     <joint name="base_right_gripper_joint" type="prismatic">
         <parent link="base_gripper_link"/>
         <child link="right_gripper_link"/>
-        <origin xyz="0 -0.05 -0.045" rpy="0 0 0"/>
+        <origin xyz="0 -0.07 -0.045" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <limit lower="-0.02" upper="0.02" effort="100.0" velocity="1.0"/>
+        <limit lower="0" upper="0.04" effort="100.0" velocity="1.0"/>
         <dynamics friction="2.5" damping="0.8"/>
     </joint>
 
     <joint name="base_left_gripper_joint" type="prismatic">
         <parent link="base_gripper_link"/>
         <child link="left_gripper_link"/>
-        <origin xyz="0 0.05 -0.045" rpy="0 0 0"/>
+        <origin xyz="0 0.07 -0.045" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <limit lower="-0.02" upper="0.02" effort="100.0" velocity="1.0"/>
+        <limit lower="-0.04" upper="0" effort="100.0" velocity="1.0"/>
         <dynamics friction="2.5" damping="0.8"/>
     </joint>
 

@@ -88,6 +88,12 @@
   gz_type_name: "gz.msgs.IMU"
   direction: GZ_TO_ROS
 
+- ros_topic_name: "/distance_scan"
+  gz_topic_name: "/distance_scan"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  direction: GZ_TO_ROS
+
 - ros_topic_name: "/scan"
   gz_topic_name: "/scan"
   ros_type_name: "sensor_msgs/msg/LaserScan"
@@ -111,3 +117,22 @@
   ros_type_name: "sensor_msgs/msg/LaserScan"
   gz_type_name: "gz.msgs.LaserScan"
   direction: GZ_TO_ROS
+
+- ros_topic_name: "blue/block/pose"
+  gz_topic_name: "/model/blue_tag_1/pose"
+  ros_type_name: "geometry_msgs/msg/Pose"
+  gz_type_name: "gz.msgs.Pose"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "red/block/pose"
+  gz_topic_name: "/model/red_tag_0/pose"
+  ros_type_name: "geometry_msgs/msg/Pose"
+  gz_type_name: "gz.msgs.Pose"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "/robo_ground_truth/pose"
+  gz_topic_name: "/model/orion/pose"
+  ros_type_name: "geometry_msgs/msg/PoseArray"
+  gz_type_name: "gz.msgs.Pose_V"
+  direction: GZ_TO_ROS
+  
