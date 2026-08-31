@@ -17,8 +17,3 @@ install(
 )
 
 ament_package()
-
-install(PROGRAMS
-  nodes/nav_states.py
-  DESTINATION lib/${PROJECT_NAME}
-)

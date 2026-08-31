@@ -61,7 +61,7 @@ class ScaraControl(Node):
         self.block_received = False
         self.pid1 = JointPID(5, 0.5, 1, 0.005, self.theta1)
         self.pid2 = JointPID(5, 0.5, 1, 0.005, self.theta2)
-        self.heightPid = JointPID(500, 10, 80, 0.07, self.height)
+        self.heightPid = JointPID(500, 50, 300, 0.07, self.height)
 
         #current positions:
         self.current_theta1 = 0.0
@@ -89,7 +89,7 @@ class ScaraControl(Node):
 
         confirmMsg = String()
         if self.manipulator_state == "Retract Arm":
-            self.height = 0.05
+            self.height = 0.2
             if self.heightPid.confirmation: 
                 self.goal[0] = -0.775
                 self.goal[1] = 0
@@ -174,9 +174,9 @@ class ScaraControl(Node):
         self.arm1Pub.publish(cmd1_msg)
         self.arm2Pub.publish(cmd2_msg)
         
-        self.get_logger().info(f"Arm1 Error: {self.pid1.prev_error}", throttle_duration_sec = 2)
-        self.get_logger().info(f"Arm2 Error: {self.pid2.prev_error}",throttle_duration_sec = 2)
-        self.get_logger().info(f"Height error: {self.heightPid.prev_error}",throttle_duration_sec = 2)
+        # self.get_logger().info(f"Arm1 Error: {self.pid1.prev_error}", throttle_duration_sec = 2)
+        # self.get_logger().info(f"Arm2 Error: {self.pid2.prev_error}",throttle_duration_sec = 2)
+        # self.get_logger().info(f"Height error: {self.heightPid.prev_error}",throttle_duration_sec = 2)
  
         
     def currentHeightSetter(self, msg):

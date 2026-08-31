@@ -165,28 +165,32 @@ class AprilTagPoseNode(Node):
             f'log_interval={self.log_interval:.1f} s'
         )
 
+    def set_param(self, name, value):
+        if hasattr(self.params, name):
+            setattr(self.params, name, value)
+
     def setup_detector_params(self):
-        # cornerRefinementMethod = CORNER_REFINE_SUBPIX segfaults on cv2 4.6.0 — omitted.
-        self.params.cornerRefinementWinSize       = 5
-        self.params.cornerRefinementMaxIterations = 80
-        self.params.cornerRefinementMinAccuracy   = 0.001
-        self.params.adaptiveThreshWinSizeMin      = 3
-        self.params.adaptiveThreshWinSizeMax      = 83
-        self.params.adaptiveThreshWinSizeStep     = 4
-        self.params.minMarkerPerimeterRate        = 0.005
-        self.params.maxMarkerPerimeterRate        = 4.0
-        self.params.polygonalApproxAccuracyRate   = 0.08
-        self.params.minCornerDistanceRate         = 0.005
-        self.params.minMarkerDistanceRate         = 0.005
-        self.params.minDistanceToBorder           = 0
-        self.params.errorCorrectionRate           = 1.0
-        self.params.detectInvertedMarker          = True
-        self.params.aprilTagQuadDecimate          = 1.0
-        self.params.aprilTagQuadSigma             = 0.0
-        self.params.aprilTagMinClusterPixels      = 5
-        self.params.aprilTagMaxNmaxima            = 20
-        self.params.aprilTagMaxLineFitMse         = 20.0
-        self.params.aprilTagMinWhiteBlackDiff     = 3
+        self.set_param('cornerRefinementMethod',        cv2.aruco.CORNER_REFINE_SUBPIX)
+        self.set_param('cornerRefinementWinSize',       5)
+        self.set_param('cornerRefinementMaxIterations', 80)
+        self.set_param('cornerRefinementMinAccuracy',   0.001)
+        self.set_param('adaptiveThreshWinSizeMin',      3)
+        self.set_param('adaptiveThreshWinSizeMax',      83)
+        self.set_param('adaptiveThreshWinSizeStep',     4)
+        self.set_param('minMarkerPerimeterRate',        0.005)
+        self.set_param('maxMarkerPerimeterRate',        4.0)
+        self.set_param('polygonalApproxAccuracyRate',   0.08)
+        self.set_param('minCornerDistanceRate',         0.005)
+        self.set_param('minMarkerDistanceRate',         0.005)
+        self.set_param('minDistanceToBorder',           0)
+        self.set_param('errorCorrectionRate',           1.0)
+        self.set_param('detectInvertedMarker',          True)
+        self.set_param('aprilTagQuadDecimate',          1.0)
+        self.set_param('aprilTagQuadSigma',             0.0)
+        self.set_param('aprilTagMinClusterPixels',      5)
+        self.set_param('aprilTagMaxNmaxima',            20)
+        self.set_param('aprilTagMaxLineFitMse',         20.0)
+        self.set_param('aprilTagMinWhiteBlackDiff',     3)
 
     def info_cb(self, msg):
         self.K = np.array(msg.k, dtype=np.float64).reshape(3, 3)
