@@ -17,3 +17,11 @@ install(
 )
 
 ament_package()
+<<<<<<< HEAD
+=======
+
+install(PROGRAMS
+  nodes/nav_states.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+>>>>>>> Scara_PID
