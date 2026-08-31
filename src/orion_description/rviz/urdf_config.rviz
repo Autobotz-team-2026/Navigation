@@ -1,10 +1,6 @@
 Panels:
   - Class: rviz_common/Displays
-<<<<<<< HEAD
     Help Height: 0
-=======
-    Help Height: 78
->>>>>>> Scara_PID
     Name: Displays
     Property Tree Widget:
       Expanded:
