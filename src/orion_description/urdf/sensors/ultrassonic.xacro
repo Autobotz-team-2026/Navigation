@@ -74,10 +74,10 @@
 
     </xacro:macro>
 
- <xacro:ultrasonic_module parent="second_support_scara_link"
+ <!-- <xacro:ultrasonic_module parent="second_support_scara_link"
     name="ultrasonic_height"
     origin_xyz="0 0 ${-scara_support_radius/2 + 0.03}"
     origin_rpy="0 1.5708 0"
-    topic="ultrasonic/height"/>
+    topic="ultrasonic/height"/> -->
 
 </robot>
